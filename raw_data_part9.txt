@@ -1,0 +1,491 @@
+highest point : 
+1	China	8849
+2	Nepal	8849
+3	Pakistan	8611
+4	India	8586
+5	Bhutan	7571
+6	Tajikistan	7495
+7	Afghanistan	7492
+8	Kyrgyzstan	7439
+9	Kazakhstan	7010
+10	Argentina	6961
+11	Chile	6893
+12	Peru	6768
+13	Bolivia	6542
+14	Ecuador	6263
+15	United States	6190
+16	Canada	5959
+17	Tanzania	5895
+18	Myanmar	5881
+19	Colombia	5775
+20	Russia	5642
+21	Mexico	5636
+22	Iran	5609
+23	Georgia	5203
+24	Kenya	5199
+25	Turkey	5137
+26	Democratic Republic of the Congo	5109
+27	Uganda	5109
+28	Venezuela	4978
+29	Antarctica	4892
+30	Indonesia	4884
+31	France	4806
+32	Italy	4806
+33	Uzbekistan	4643
+34	Switzerland	4634
+35	Ethiopia	4550
+36	Papua New Guinea	4509
+37	Rwanda	4507
+38	Azerbaijan	4466
+39	Mongolia	4356
+40	Guatemala	4203
+41	Morocco	4167
+42	Malaysia	4095
+43	Armenia	4090
+44	Cameroon	4040
+45	Taiwan	3952
+46	Costa Rica	3821
+47	Austria	3798
+48	Japan	3776
+49	New Zealand	3724
+50	Spain	3715
+51	Greenland	3694
+52	Yemen	3666
+53	Iraq	3611
+54	Lesotho	3482
+55	Panama	3475
+56	Chad	3447
+57	South Africa	3446
+58	South Sudan	3187
+59	Vietnam	3147
+60	Turkmenistan	3138
+61	Dominican Republic	3101
+62	Lebanon	3088
+63	Réunion	3070
+64	Sudan	3024
+65	Eritrea	3018
+66	Oman	3018
+67	Saudi Arabia	3015
+68	Equatorial Guinea	3011
+69	Malawi	3002
+70	Brazil	2995
+71	Timor-Leste	2963
+72	Germany	2962
+73	Philippines	2954
+74	Andorra	2943
+75	South Georgia and the South Sandwich Islands	2935
+76	Bulgaria	2925
+77	Greece	2918
+78	Algeria	2908
+79	Madagascar	2876
+80	Honduras	2870
+81	Slovenia	2864
+82	Laos	2830
+83	Cape Verde	2829
+84	Syria	2814
+85	Guyana	2772
+86	Albania	2764
+87	Northacedonia	2764
+88	Heard Island andcDonald Islands	2745
+89	North Korea	2744
+90	El Salvador	2730
+91	Burundi	2684
+92	Haiti	2680
+93	Kosovo	2660
+94	Slovakia	2654
+95	Egypt	2629
+96	Angola	2620
+97	Liechtenstein	2599
+98	Zimbabwe	2592
+99	Namibia	2573
+100	Thailand	2565
+101	Romania	2545
+102	Montenegro	2534
+103	Sri Lanka	2524
+104	Poland	2499
+105	Norway	2469
+106	Somalia	2460
+107	Mozambique	2440
+108	Nigeria	2419
+109	Bosnia and Herzegovina	2386
+110	Comoros	2361
+111	Portugal	2351
+112	Zambia	2339
+113	Solomon Islands	2335
+114	Svalbard and Janayen	2277
+115	Libya	2267
+116	Jamaica	2256
+117	French Polynesia	2241
+118	Australia	2228
+119	Serbia	2169
+120	Iceland	2110
+121	Sweden	2097
+122	Nicaragua	2085
+123	Saint Helena, Ascension and Tristan da Cunha	2062
+124	Ukraine	2061
+125	São Tomé and Príncipe	2024
+126	Djibouti	2021
+127	Niger	2002
+128	Cuba	1974
+129	Cyprus	1952
+130	South Korea	1947
+131	Sierra Leone	1945
+132	United Arab Emirates	1892
+133	Vanuatu	1879
+134	Brunei	1875
+135	Eswatini	1862
+136	Samoa	1858
+137	Jordan	1854
+138	French Southern and Antarctic Lands	1850
+139	Croatia	1831
+140	Cambodia	1813
+141	Ivory Coast	1752
+142	Guinea	1752
+143	New Caledonia	1628
+144	Czech Republic	1603
+145	Tunisia	1544
+146	Botswana	1494
+147	Guadeloupe	1467
+148	Dominica	1447
+149	Liberia	1447
+150	Central African Republic	1410
+151	Martinique	1397
+152	United Kingdom	1345
+153	Puerto Rico	1338
+154	Fiji	1324
+155	Finland	1324
+156	Suriname	1280
+157	Saint Vincent and the Grenadines	1235
+158	Israel	1204
+159	Saint Kitts and Nevis	1156
+160	Mali	1155
+161	Belize	1124
+162	Gabon	1070
+163	Bangladesh	1063
+164	Ireland	1039
+165	Palestine	1030
+166	Tonga	1030
+167	Republic of the Congo	1020
+168	Hungary	1014
+169	Togo	991
+170	American Samoa	966
+171	Northernariana Islands	965
+172	Hong Kong	957
+173	Saint Lucia	950
+174	Trinidad and Tobago	940
+175	Mauritania	915
+176	Montserrat	915
+177	Seychelles	905
+178	Ghana	900
+179	Faroe Islands	880
+180	Netherlands	870
+181	French Guiana	851
+182	Paraguay	842
+183	Grenada	840
+184	Mauritius	828
+185	Federated States oficronesia	782
+186	Bouvet Island	780
+187	Burkina Faso	747
+188	Sanarino	739
+189	Falkland Islands	705
+190	Belgium	694
+191	Bir Tawil	662
+192	Mayotte	660
+193	Benin	658
+194	Cook Islands	652
+195	Senegal	638
+196	Isle ofan	621
+197	Sahrawi Republic	620
+198	Luxembourg	560
+199	Wallis and Futuna	524
+200	British Virgin Islands	523
+201	Uruguay	514
+202	United States Virgin Islands	474
+203	Moldova	430
+204	Gibraltar	426
+205	Saintartin	424
+206	Guam	406
+207	Antigua and Barbuda	402
+208	Sintaarten	383
+209	Curaçao	372
+210	Christmas Island	361
+211	Pitcairn Islands	347
+212	Belarus	345
+213	Barbados	340
+214	Norfolk Island	319
+215	Estonia	318
+216	Latvia	312
+217	Lithuania	294
+218	Kuwait	291
+219	Saint Barthélemy	286
+220	Guinea-Bissau	266
+221	Malta	253
+222	Palau	242
+223	Saint Pierre andiquelon	240
+224	Aruba	188
+225	Macau	172
+226	Denmark	171
+227	Singapore	164
+228	Monaco	162
+229	Jersey	136
+230	Bahrain	134
+231	Guernsey	114
+232	Qatar	103
+233	Kiribati	81
+234	Bermuda	79
+235	Vatican City	75
+236	Anguilla	73
+237	Niue	68
+238	Nauru	65
+239	Bahamas	63
+240	Gambia	51
+241	Turks and Caicos Islands	49
+242	Cayman Islands	43
+243	Clipperton Island	29
+244	Coral Sea Islands	29
+245	British Indian Ocean Territory	15
+246	Marshall Islands	10
+247	United Statesinor Outlying Islands	10
+248	Cocos (Keeling) Islands	9
+249	Maldives	5
+250	Tokelau	5
+251	Tuvalu	5
+252	Spratly Islands	4
+253	Ashmore and Cartier Islands	3
+
+temperature : 
+1	Burkina Faso	30,4
+2	Mali	29,21
+3	Aruba	29,17
+4	Senegal	28,9
+5	Mauritania	28,82
+6	Tokelau	28,71
+7	Tuvalu	28,62
+8	Djibouti	28,49
+9	Curaçao	28,4
+10	Gambia	28,38
+11	United Arab Emirates	28,17
+12	Maldives	28,11
+13	Niger	28,04
+14	Benin	28,02
+15	Qatar	28,02
+16	Marshall Islands	28,01
+17	Guinea-Bissau	27,98
+18	South Sudan	27,97
+19	Sudan	27,95
+20	Palau	27,9
+21	Nauru	27,83
+22	Cayman Islands	27,82
+23	Guam	27,81
+24	Kiribati	27,77
+25	Anguilla	27,71
+26	Saint Martin	27,71
+27	Sint Maarten	27,71
+28	Bahrain	27,69
+29	Singapore	27,68
+30	Ghana	27,66
+31	Oman	27,64
+32	Chad	27,63
+33	British Indian Ocean Territory	27,61
+34	Northern Mariana Islands	27,6
+35	Samoa	27,58
+36	Caribbean Netherlands	27,47
+37	Saint Kitts and Nevis	27,47
+38	Cambodia	27,41
+39	American Samoa	27,38
+40	Togo	27,33
+41	Nigeria	27,3
+42	Wallis and Futuna	27,3
+43	Federated States of Micronesia	27,28
+44	Sri Lanka	27,25
+45	Antigua and Barbuda	27,2
+46	Seychelles	27,09
+47	Saint Lucia	27
+48	United States Virgin Islands	26,98
+49	Brunei	26,95
+50	Somalia	26,95
+51	Thailand	26,85
+52	Dominica	26,83
+53	Ivory Coast	26,8
+54	Cocos (Keeling) Islands	26,79
+55	British Virgin Islands	26,7
+56	Eritrea	26,63
+57	Barbados	26,61
+58	Suriname	26,58
+59	Trinidad and Tobago	26,55
+60	Sierra Leone	26,54
+61	Grenada	26,49
+62	Malaysia	26,38
+63	Kuwait	26,31
+64	Turks and Caicos Islands	26,29
+65	Saint Vincent and the Grenadines	26,17
+66	Guyana	26,12
+67	Christmas Island	26,06
+68	Indonesia	25,96
+69	Saudi Arabia	25,94
+70	Solomon Islands	25,92
+71	Jamaica	25,91
+72	Nicaragua	25,88
+73	Guinea	25,86
+74	Cuba	25,81
+75	Montserrat	25,75
+76	Bangladesh	25,71
+77	Venezuela	25,71
+78	Belize	25,7
+79	Panama	25,6
+80	Bahamas	25,58
+81	Yemen	25,54
+82	Central African Republic	25,47
+83	Liberia	25,45
+84	Brazil	25,44
+85	El Salvador	25,23
+86	Gabon	25,2
+87	Kenya	25,08
+88	Puerto Rico	25,04
+89	Niue	25,03
+90	Tonga	25,01
+91	Colombia	25
+92	United States Minor Outlying Islands	24,97
+93	Haiti	24,95
+94	India	24,94
+95	Costa Rica	24,83
+96	Cameroon	24,8
+97	Vietnam	24,79
+98	Republic of the Congo	24,74
+99	Papua New Guinea	24,74
+100	Honduras	24,72
+101	Cook Islands	24,71
+102	Fiji	24,68
+103	Equatorial Guinea	24,66
+104	Timor-Leste	24,57
+105	Dominican Republic	24,55
+106	São Tomé and Príncipe	24,49
+107	Vanuatu	24,44
+108	Mozambique	24,41
+109	Democratic Republic of the Congo	24,35
+110	French Polynesia	24,3
+111	Laos	24,16
+112	Paraguay	23,92
+113	Myanmar	23,82
+114	Comoros	23,73
+115	Guatemala	23,65
+116	Algeria	23,6
+117	Ethiopia	23,36
+118	Mauritius	23,33
+119	Uganda	23,25
+120	Egypt	23,14
+121	Philippines	27,1
+122	Iraq	22,95
+123	Tanzania	22,92
+124	Libya	22,81
+125	New Caledonia	22,69
+126	Malawi	22,66
+127	Madagascar	22,64
+128	Cape Verde	22,53
+129	Zambia	22,23
+130	Botswana	22,09
+131	Australia	22,05
+132	Zimbabwe	21,9
+133	Angola	21,77
+134	Bermuda	21,67
+135	Ecuador	21,43
+136	Pakistan	21,38
+137	Mexico	21,31
+138	Bolivia	20,76
+139	Eswatini	20,64
+140	Pitcairn Islands	20,56
+141	Tunisia	20,53
+142	Burundi	20,51
+143	Namibia	20,45
+144	Israel	20,25
+145	Peru	20,07
+146	Malta	20,06
+147	Jordan	20,05
+148	Palestine	20,04
+149	Rwanda	20,03
+150	Norfolk Island	20,02
+151	Cyprus	20,01
+152	Syria	18,75
+153	Iran	18,34
+154	South Africa	18,23
+155	Gibraltar	18,15
+156	Morocco	18,14
+157	Saint Helena, Ascension and Tristan da Cunha	18,1
+158	Uruguay	17,97
+159	Turkmenistan	16,66
+160	Argentina	16,3
+161	Portugal	15,85
+162	Lebanon	15,45
+163	Vatican City	15,2
+164	Nepal	14,5
+165	Greece	13,17
+166	Spain	13,07
+167	Uzbekistan	13,06
+168	Monaco	13,05
+169	Afghanistan	13,04
+170	Italy	13,02
+171	Azerbaijan	12,96
+172	San Marino	12,83
+173	Albania	12,44
+174	Lesotho	12,38
+175	Jersey	12,27
+176	South Korea	12,22
+177	Guernsey	12,09
+178	Croatia	11,96
+179	Japan	11,78
+180	Turkey	11,66
+181	France	11,65
+182	Hungary	11,5
+183	Serbia	11,4
+184	Bulgaria	11,35
+185	Moldova	10,89
+186	North Macedonia	10,79
+187	Belgium	10,67
+188	Netherlands	10,49
+189	New Zealand	10,46
+190	Bhutan	10,38
+191	Bosnia and Herzegovina	10,35
+192	Romania	10,18
+193	Kosovo	10,02
+194	Luxembourg	10,02
+195	Montenegro	9,93
+196	Slovenia	9,86
+197	Ireland	9,73
+198	Isle of Man	9,65
+199	Germany	9,59
+200	United States	9,46
+201	Chile	9,39
+202	Ukraine	9,27
+203	United Kingdom	9,24
+204	Georgia	9,01
+205	Denmark	8,9
+206	Slovakia	8,83
+207	Poland	8,78
+208	Czech Republic	8,6
+209	Andorra	8,27
+210	Armenia	7,82
+211	China	7,59
+212	Liechtenstein	7,55
+213	Belarus	7,45
+214	Austria	7,44
+215	Lithuania	7,38
+216	Kazakhstan	7,11
+217	North Korea	6,98
+218	Latvia	6,87
+219	Faroe Islands	6,6
+220	Switzerland	6,47
+221	Estonia	6,34
+222	Saint Pierre and Miquelon	5,72
+223	French Southern and Antarctic Lands	4,11
+224	Tajikistan	3,85
+225	Sweden	3,23
+226	Kyrgyzstan	2,65
+227	Finland	2,46
+228	Heard Island and McDonald Islands	2,46
+229	Norway	2,21
+230	Iceland	1,85
+231	Mongolia	1,07
+232	Russia	−3,79
+233	Canada	−4,03
+234	Svalbard and Jan Mayen	−6,78
+235	Greenland	−18,68

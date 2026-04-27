@@ -1,0 +1,449 @@
+pop growth : 
+1	Syria *	6.39
+2	South Sudan *	4.65
+3	Niger *	3.66
+4	Equatorial Guinea *	3.36
+5	Angola *	3.33
+6	Benin *	3.29
+7	Uganda *	3.22
+8	DR Congo *	3.13
+9	Chad *	03.01
+10	Mali *	2.93
+11	Zambia *	2.86
+12	Burundi *	2.81
+13	Guinea *	2.75
+14	Tanzania *	2.75
+15	Cameroon *	2.71
+16	Liberia *	2.71
+17	Mozambique *	2.55
+18	Somalia *	2.55
+19	Sudan *	2.55
+20	Guinea-Bissau *	2.54
+21	Nigeria *	2.53
+22	Senegal *	2.52
+23	Togo *	2.45
+24	Ethiopia *	2.42
+25	Sierra Leone *	2.41
+26	Burkina Faso *	2.40
+27	Venezuela *	2.40
+28	Gabon *	2.39
+29	Congo *	2.33
+30	Papua New Guinea *	2.31
+31	Malawi *	2.28
+32	Gambia *	2.23
+33	Afghanistan *	2.22
+34	Madagascar *	2.22
+35	Ghana *	2.19
+36	Ivory Coast *	2.16
+37	Timor-Leste *	2.10
+38	Kenya *	02.09
+39	Gaza Strip *	1.99
+40	Mauritania *	1.96
+41	Zimbabwe *	1.95
+42	Iraq *	1.94
+43	Djibouti *	1.93
+44	Pakistan *	1.91
+45	British Virgin Islands *	1.87
+46	Yemen *	1.83
+47	Turks and Caicos Islands * (UK)	1.81
+48	Namibia *	1.80
+49	Oman *	1.80
+50	Cayman Islands * (UK)	1.79
+51	Anguilla * (UK)	1.77
+52	Central African Republic *	1.76
+53	Solomon Islands *	1.69
+54	Rwanda *	1.68
+55	West Bank *	1.66
+56	Saudi Arabia *	1.65
+57	Egypt *	1.59
+58	Vanuatu *	1.59
+59	Luxembourg *	1.58
+60	Philippines *	1.58
+61	Algeria *	1.54
+62	Guatemala *	1.54
+63	Libya *	1.54
+64	Panama *	1.51
+65	Belize *	1.47
+66	São Tomé and Príncipe *	1.45
+67	Israel *	1.43
+68	Brunei *	1.40
+69	Tajikistan *	1.36
+70	Botswana *	1.34
+71	Comoros *[b]	1.34
+72	Laos *	1.30
+73	Marshall Islands *	1.30
+74	Sint Maarten * (Netherlands)	1.19
+75	Haiti *	1.18
+76	World	1.17
+77	New Caledonia * (France)	1.17
+78	Cape Verde *	1.16
+79	Honduras *	1.16
+80	Australia *	1.13
+81	Kuwait *	1.13
+82	Paraguay *	1.12
+83	Antigua and Barbuda *	1.11
+84	Aruba * (Netherlands)	1.11
+85	Christmas Island * (Australia)	1.11
+86	Ecuador *	1.10
+87	Eritrea *	01.08
+88	Bahamas *	01.07
+89	South Africa *	01.07
+90	Suriname *	01.07
+91	New Zealand *	01.06
+92	Kiribati *	01.02
+93	Malaysia *	01.01
+94	Bolivia *	1.00
+95	Cyprus *	1.00
+96	Cambodia *	0.99
+97	Costa Rica *	0.98
+98	Bhutan *	0.95
+99	Turkmenistan *	0.95
+100	Iran *	0.93
+101	Vietnam *	0.93
+102	Ireland *	0.91
+103	Nicaragua *	0.91
+104	Singapore *	0.90
+105	Bangladesh *	0.89
+106	Iceland *	0.89
+107	Dominican Republic *	0.88
+108	Morocco *	0.88
+109	Qatar *	0.86
+110	Mongolia *	0.83
+111	Bahrain *	0.82
+112	Kyrgyzstan *	0.82
+113	Tuvalu *	0.81
+114	Uzbekistan *	0.81
+115	Argentina *	0.79
+116	Jordan *	0.79
+117	Norway *	0.79
+118	Indonesia *	0.76
+119	Lesotho *	0.76
+120	Nepal *	0.74
+121	Kazakhstan *	0.73
+122	Eswatini (Swaziland) *	0.72
+123	Myanmar *	0.71
+124	Canada *	0.71
+125	Macau *	0.71
+126	India *	0.70
+127	Liechtenstein *	0.70
+128	French Polynesia *	0.70
+129	United States *	0.68
+130	Monaco *	0.66
+131	Samoa *	0.65
+132	Lebanon *	0.64
+133	Switzerland *	0.64
+134	Turkey *	0.64
+135	Chile *	0.63
+136	Tunisia *	0.63
+137	Faroe Islands * (Denmark)	0.63
+138	Kosovo *	0.62
+139	Brazil *	0.61
+140	Mexico *	0.61
+141	Seychelles *	0.60
+142	Malta *	0.59
+143	Saint Kitts and Nevis *	0.59
+144	San Marino *	0.59
+145	United Arab Emirates *	0.58
+146	Colombia *	0.54
+147	Belgium *	0.53
+148	Sweden *	0.51
+149	Peru *	0.50
+150	United Kingdom *	0.49
+151	Isle of Man * (UK)	0.48
+152	El Salvador *	0.46
+153	Montserrat * (UK)	0.46
+154	Denmark *	0.44
+155	North Korea *	0.44
+156	Azerbaijan *	0.43
+157	Fiji *	0.42
+158	Nauru *	0.42
+159	Palau *	0.39
+160	Sri Lanka *	0.39
+161	Netherlands *	0.36
+162	Bermuda * (UK)	0.32
+163	France *[c]	0.31
+164	Austria *	0.30
+165	Grenada *	0.29
+166	Guyana *	0.28
+167	Saint Lucia *	0.27
+168	Uruguay *	0.27
+169	Barbados *	0.23
+170	China *[a]	0.23
+171	South Korea *	0.23
+172	Wallis and Futuna * (France)	0.23
+173	Finland *	0.22
+174	Thailand *	0.20
+175	Gibraltar * (UK)	0.19
+176	Albania *	0.16
+177	Hong Kong *	0.15
+178	Guam * (US)	0.13
+179	Spain *	0.12
+180	Trinidad and Tobago *	0.12
+181	North Macedonia *	0.11
+182	Saint Helena and Dependencies * (UK)	0.11
+183	Jamaica *	0.09
+184	Mauritius *	0.09
+185	Taiwan *	0.03
+186	Dominica *	0.02
+187	Georgia *	0.01
+188	Falkland Islands *	0.01
+189	Norfolk Island * (Australia)	0.01
+190	Czech Republic *	0.00
+191	Vatican City *	0.00
+192	Pitcairn Islands * (UK)	0.00
+193	Tokelau * (NZ)	-0.01
+194	Niue * (New Zealand)	-0.03
+195	Svalbard * (Norway)	-0.03
+196	Greenland * (Denmark)	-0.04
+197	Slovenia *	-0.08
+198	Italy *	-0.11
+199	Andorra *	-0.12
+200	Germany *	-0.12
+201	Slovakia *	-0.12
+202	Saint Vincent and the Grenadines *	-0.16
+203	Maldives *	-0.17
+204	Portugal *	-0.17
+205	Cuba *	-0.19
+206	Russia *	-0.24
+207	Bosnia and Herzegovina *	-0.25
+208	Poland *	-0.28
+209	Tonga *	-0.30
+210	Hungary *	-0.31
+211	Greece *	-0.35
+212	Northern Mariana Islands * (US)	-0.35
+213	Japan *	-0.41
+214	Armenia *	-0.42
+215	Belarus *	-0.42
+216	Montenegro *	-0.43
+217	Croatia *	-0.47
+218	U.S. Virgin Islands *	-0.49
+219	Ukraine *	-0.52
+220	Serbia *	-0.63
+221	Bulgaria *	-0.66
+222	Micronesia *	-0.70
+223	Estonia *	-0.74
+224	Romania *	-1.01
+225	Lithuania *	-1.04
+226	Latvia *	-1.13
+227	Moldova *	-1.14
+228	Saint Pierre and Miquelon * (France)	-1.19
+229	Puerto Rico * (US)	-1.29
+230	American Samoa *	-1.74
+231	Cook Islands * (NZ)	-2.31
+
+under 15 rate : 
+1	Niger	48,8 %
+2	République centrafricaine	47,8 %
+3	Tchad	47,4 %
+4	Somalie	47,1 %
+5	Mali	47,0 %
+6	République démocratique du Congo	46,5 %
+7	Burundi	45,2 %
+8	Angola	44,8 %
+9	Ouganda	44,4 %
+10	Burkina Faso	43,3 %
+11	Mozambique	43,3 %
+12	Tanzanie	43,1 %
+13	Soudan du Sud	43,0 %
+14	Afghanistan	42,8 %
+15	Nigeria	42,8 %
+16	Gambie	42,6 %
+17	Zambie	42,4 %
+18	Bénin	42,3 %
+19	Cameroun	42,0 %
+20	Malawi	42,0 %
+21	Guinée	41,2 %
+22	Mauritanie	41,2 %
+23	Côte d'Ivoire	41,1 %
+24	Sénégal	41,1 %
+25	Soudan	40,7 %
+26	République du Congo	40,6 %
+27	Zimbabwe	40,3 %
+28	Liberia	40,0 %
+29	Guinée-Bissau	39,6 %
+30	Togo	39,6 %
+31	Éthiopie	39,3 %
+32	Yémen	39,1 %
+33	Vanuatu	39,1 %
+34	Îles Salomon	38,9 %
+35	Sao Tomé-et-Principe	38,9 %
+36	Nauru	38,8 %
+37	Érythrée	38,7 %
+38	Madagascar	38,7 %
+39	Sierra Leone	38,5 %
+40	Palestine	38,4 %
+41	Guinée équatoriale	38,1 %
+42	Rwanda	38,1 %
+43	Comores	37,8 %
+44	Samoa	37,5 %
+45	Irak	37,3 %
+46	Kenya	37,2 %
+47	Ghana	36,6 %
+48	Namibie	36,2 %
+49	Gabon	36,1 %
+50	Pakistan	36,1 %
+51	Tadjikistan	36,1 %
+52	Kiribati	35,9 %
+53	Eswatini	34,4 %
+54	Kirghizistan	34,3 %
+55	Timor oriental	34,2 %
+56	Tonga	34,0 %
+57	Papouasie-Nouvelle-Guinée	33,9 %
+58	Lesotho	33,8 %
+59	Égypte	32,6 %
+60	Mongolie	32,3 %
+61	Botswana	32,2 %
+62	Îles Marshall	32,0 %
+63	Guatemala	31,9 %
+64	Haïti	31,8 %
+65	Tuvalu	31,7 %
+66	Jordanie	31,5 %
+67	Turkménistan	30,9 %
+68	Bolivie	30,5 %
+69	Algérie	30,4 %
+70	Laos	30,3 %
+71	Ouzbékistan	30,2 %
+72	Djibouti	30,0 %
+73	Philippines	30,0 %
+74	États fédérés de Micronésie	29,9 %
+75	Honduras	29,7 %
+76	Syrie	29,7 %
+77	Kazakhstan	29,6 %
+78	Nicaragua	29,4 %
+79	Paraguay	28,7 %
+80	Cambodge	28,6 %
+81	Guyana	28,5 %
+82	Népal	28,5 %
+83	Fidji	28,3 %
+84	Afrique du Sud	28,3 %
+85	Israël	27,9 %
+86	Libye	27,7 %
+87	Belize	27,3 %
+88	Liban	27,3 %
+89	Samoa américaines	27,1 %
+90	Oman	27,0 %
+91	République dominicaine	26,8 %
+92	Venezuela	26,7 %
+93	Maroc	26,3 %
+94	Suriname	26,0 %
+95	Guam	25,8 %
+96	Panama	25,8 %
+97	Cap-Vert	25,7 %
+98	Pérou	25,7 %
+99	Arabie saoudite	25,6 %
+100	Bangladesh	25,5 %
+101	Équateur	25,3 %
+102	Salvador	25,0 %
+103	Inde	24,9 %
+104	Indonésie	24,9 %
+105	Tunisie	24,7 %
+106	Birmanie	24,4 %
+107	Mexique	24,0 %
+108	Grenade	23,8 %
+109	Iran	23,3 %
+110	Seychelles	23,0 %
+111	Turquie	23,0 %
+112	Azerbaïdjan	22,9 %
+113	Argentine	22,7 %
+114	Malaisie	22,4 %
+115	Sri Lanka	22,4 %
+116	Vietnam	22,2 %
+117	Nouvelle-Calédonie	21,9 %
+118	Bahreïn	21,8 %
+119	Maldives	21,7 %
+120	Saint-Vincent-et-les-Grenadines	21,7 %
+121	Bhoutan	21,5 %
+122	Géorgie	21,3 %
+123	Colombie	21,1 %
+124	Palaos	21,1 %
+125	Saint-Martin	21,1 %
+126	Polynésie française	20,8 %
+127	Groenland	20,8 %
+128	Îles Féroé	20,7 %
+129	Îles Mariannes du Nord	20,7 %
+130	Kosovo	20,6 %
+131	Arménie	20,4 %
+132	Koweït	20,1 %
+133	Brésil	20,0 %
+134	Bahreïn	19,9 %
+135	Costa Rica	19,8 %
+136	Dominique	19,4 %
+137	Jamaïque	19,4 %
+138	Irlande	19,2 %
+139	Saint-Christophe-et-Niévès	19,2 %
+140	Îles Vierges des États-Unis	19,1 %
+141	Moldavie	19,1 %
+142	Corée du Nord	18,8 %
+143	Trinité-et-Tobago	18,8 %
+144	Uruguay	18,7 %
+145	Bahamas	18,5 %
+146	Nouvelle-Zélande	18,5 %
+147	Islande	18,3 %
+148	Antigua-et-Barbuda	18,2 %
+149	Chili	18,2 %
+150	Australie	18,0 %
+151	Monténégro	17,9 %
+152	Sainte-Lucie	17,7 %
+153	États-Unis	17,7 %
+154	Russie	17,6 %
+155	Suède	17,4 %
+156	Royaume-Uni	17,2 %
+157	France	17,0 %
+158	Curaçao	16,9 %
+159	Gibraltar	16,9 %
+160	Chine	16,8 %
+161	Îles Caïmans	16,7 %
+162	Barbade	16,6 %
+163	Biélorussie	16,6 %
+164	Îles Turques-et-Caïques	16,6 %
+165	Norvège	16,4 %
+166	Belgique	16,3 %
+167	Estonie	16,3 %
+168	Albanie	16,0 %
+169	Maurice	16,0 %
+170	Danemark	15,9 %
+171	Macédoine du Nord	15,9 %
+172	Roumanie	15,8 %
+173	Tchéquie	15,8 %
+174	Chypre	15,8 %
+175	Aruba	15,7 %
+176	Qatar	15,7 %
+177	Luxembourg	15,7 %
+178	Cuba	15,6 %
+179	Slovaquie	15,6 %
+180	Canada	15,4 %
+181	Lettonie	15,4 %
+182	Lituanie	15,4 %
+183	Ukraine	15,4 %
+184	Pays-Bas	15,3 %
+185	Thaïlande	15,2 %
+186	Émirats arabes unis	15,2 %
+187	Macao	15,0 %
+188	Suisse	15,0 %
+189	Slovénie	15,0 %
+190	Finlande	14,9 %
+191	Pologne	14,9 %
+192	Bosnie-Herzégovine	14,7 %
+193	Serbie	14,6 %
+194	Bermudes	14,4 %
+195	Île de Man	14,4 %
+196	Liechtenstein	14,4 %
+197	Autriche	14,4 %
+198	Hongrie	14,4 %
+199	Bulgarie	14,0 %
+200	Allemagne	14,0 %
+201	Croatie	14,0 %
+202	Îles Vierges britanniques	13,7 %
+203	Grèce	13,6 %
+204	Espagne	13,5 %
+205	Monaco	13,3 %
+206	Porto Rico	13,3 %
+207	Malte	13,2 %
+208	Portugal	13,0 %
+209	Andorre	12,4 %
+210	Saint-Marin	12,3 %
+211	Italie	12,2 %
+212	Hong Kong	11,9 %
+213	Singapour	11,7 %
+214	Japon	11,5 %
+215	Corée du Sud	11,2 %

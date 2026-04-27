@@ -1,0 +1,53 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Stores user's coins and high score",
+      "type": "object",
+      "properties": {
+        "coins": {
+          "type": "number",
+          "description": "Amount of coins the user has"
+        },
+        "highScore": {
+          "type": "number",
+          "description": "User's highest score"
+        },
+        "createdAt": {
+          "type": "number"
+        },
+        "updatedAt": {
+          "type": "number"
+        }
+      },
+      "required": ["coins", "highScore", "createdAt", "updatedAt"]
+    },
+    "UserCard": {
+      "title": "Owned Card",
+      "description": "A card owned by a user",
+      "type": "object",
+      "properties": {
+        "countryName": {
+          "type": "string"
+        },
+        "obtainedAt": {
+          "type": "number"
+        },
+        "count": {
+          "type": "number"
+        }
+      },
+      "required": ["countryName", "obtainedAt", "count"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profile with progression"
+    },
+    "users/{userId}/cards/{countryName}": {
+      "schema": { "$ref": "#/entities/UserCard" },
+      "description": "User's collection of cards"
+    }
+  }
+}

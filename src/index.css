@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&family=DM+Sans:wght@400;500;700&family=Bungee&display=swap');
+@import "tailwindcss";
+@import "./styles/holo.css";
+
+@theme {
+  --font-heading: "Outfit", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+  --font-display: "Bungee", cursive;
+
+  --color-max-bg: #0D0D1A;
+  --color-max-fg: #FFFFFF;
+  --color-max-muted: #2D1B4E;
+  --color-accent-magenta: #FF3AF2;
+  --color-accent-cyan: #00F5D4;
+  --color-accent-yellow: #FFE600;
+  --color-accent-orange: #FF6B35;
+  --color-accent-purple: #7B2FFF;
+}
+
+@layer base {
+  body {
+    @apply bg-max-bg text-max-fg font-body overflow-x-hidden;
+    background-image: 
+      radial-gradient(circle, #FF3AF2 1px, transparent 1px),
+      repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 230, 0, 0.05) 10px, rgba(255, 230, 0, 0.05) 20px);
+    background-size: 30px 30px, 100% 100%;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-heading uppercase tracking-tighter leading-none;
+  }
+}
+
+@layer utilities {
+  .text-shadow-magenta {
+    text-shadow: 2px 2px 0px #7B2FFF, 4px 4px 0px #FF3AF2;
+  }
+  .text-shadow-cyan {
+    text-shadow: 2px 2px 0px #FF3AF2, 4px 4px 0px #00F5D4;
+  }
+  .text-shadow-mega {
+    text-shadow: 4px 4px 0px #792FFF, 8px 8px 0px #FF3AF2, 12px 12px 0px #00F5D4;
+  }
+
+  .shadow-max-magenta {
+    box-shadow: 8px 8px 0 #FFE600, 16px 16px 0 #FF3AF2;
+  }
+  .shadow-max-cyan {
+    box-shadow: 8px 8px 0 #FF6B35, 16px 16px 0 #00F5D4;
+  }
+  .shadow-max-yellow {
+    box-shadow: 8px 8px 0 #7B2FFF, 16px 16px 0 #FFE600;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  .animate-wiggle {
+    animation: wiggle 1s ease-in-out infinite;
+  }
+  .animate-gradient-shift {
+    background-size: 200% 200%;
+    animation: gradient-shift 4s ease infinite;
+  }
+  
+  .animate-neon-flicker {
+    animation: neon-flicker 5s linear infinite;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-20px) rotate(5deg); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-3deg); }
+  50%      { transform: rotate(3deg); }
+}
+
+@keyframes gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes neon-flicker {
+  0%, 100% { opacity: 1; text-shadow: 0 0 10px #FFE600, 0 0 20px #FFE600, 0 0 40px #FFE600; }
+  3%, 5%, 6% { opacity: 0.1; text-shadow: none; }
+  4%, 5.5% { opacity: 1; text-shadow: 0 0 5px #FFE600; }
+  7% { opacity: 1; text-shadow: 0 0 10px #FFE600, 0 0 20px #FFE600, 0 0 40px #FFE600; }
+}

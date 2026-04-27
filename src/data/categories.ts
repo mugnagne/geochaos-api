@@ -1,0 +1,42 @@
+import { CategorySpec } from '../types';
+
+export const CATEGORIES: CategorySpec[] = [
+  { id: 'alcoholConsumption', label: "Conso. Alcool", labelHigher: "Plus forte conso. d'alcool", labelLower: "Plus faible conso. d'alcool", unit: 'L/hab', description: "Consommation annuelle d'alcool pur par personne." },
+  { id: 'averageTemp', label: "Température", labelHigher: "Température la plus élevée", labelLower: "Température la plus basse", unit: '°C', description: "Température moyenne annuelle." },
+  { id: 'coffeeProduction', label: "Prod. Café", labelHigher: "Plus grande prod. de café", labelLower: "Plus petite prod. de café", unit: 'tonnes', description: "Production annuelle de café." },
+  { id: 'corruptionIndex', label: "Transparence", labelHigher: "Plus haut indice de transparence", labelLower: "Plus bas indice de transparence", unit: '/100', description: "Indice de perception de la corruption (CPI) (plus il est haut, moins il y a de corruption)." },
+  { id: 'democracyScore', label: "Démocratie", labelHigher: "Meilleur score de démocratie", labelLower: "Pire score de démocratie", unit: '/10', description: "Indice de démocratie (EIU)." },
+  { id: 'riceProduction', label: "Prod. Riz", labelHigher: "Plus grande prod. de riz", labelLower: "Plus petite prod. de riz", unit: 'tonnes', description: "Production annuelle de riz." },
+  { id: 'highestPoint', label: "Altitude Max", labelHigher: "Point culminant le plus haut", labelLower: "Point culminant le plus bas", unit: 'm', description: "Point le plus élevé du territoire." },
+  { id: 'homicideRate', label: "Homicides", labelHigher: "Plus fort taux d'homicides", labelLower: "Plus faible taux d'homicides", unit: '/100k', description: "Taux d'homicides volontaires pour 100 000 habitants." },
+  { id: 'obesityRate', label: "Obésité", labelHigher: "Plus fort taux d'obésité", labelLower: "Plus faible taux d'obésité", unit: '%', description: "Pourcentage de la population adulte obèse." },
+  { id: 'over65Rate', label: "Séniors (65+)", labelHigher: "Plus forte part de séniors", labelLower: "Plus faible part de séniors", unit: '%', description: "Part de la population de 65 ans et plus." },
+  { id: 'under15Rate', label: "Jeunes (<15 ans)", labelHigher: "Plus forte part de jeunes", labelLower: "Plus faible part de jeunes", unit: '%', description: "Part de la population de moins de 15 ans." },
+  { id: 'annualPrecipitation', label: "Précipitations", labelHigher: "Précipitations les plus fortes", labelLower: "Précipitations les plus faibles", unit: 'mm/an', description: "Cumul annuel moyen de précipitations." },
+  { id: 'populationGrowthRate', label: "Croissance Pop.", labelHigher: "Plus forte croissance pop.", labelLower: "Plus faible croissance pop.", unit: '%', description: "Taux de croissance annuel de la population." },
+  { id: 'fruitProduction', label: "Prod. Fruits", labelHigher: "Plus grande prod. de fruits", labelLower: "Plus petite prod. de fruits", unit: 'tonnes', description: "Production annuelle totale de fruits." },
+  { id: 'childLabour', label: "Travail des enfants", labelHigher: "Plus fort taux de travail infantile", labelLower: "Plus faible taux de travail infantile", unit: '%', description: "Pourcentage d'enfants (5-17 ans) engagés dans le travail des enfants." },
+  { id: 'roadTrafficDeaths', label: "Morts sur la route", labelHigher: "Plus grand nombre de tués sur la route", labelLower: "Plus petit nombre de tués sur la route", unit: 'morts', description: "Nombre annuel de décès liés aux accidents de la circulation." },
+  
+  // New Stats
+  { id: 'density', label: "Densité", labelHigher: "Plus forte densité", labelLower: "Plus faible densité", unit: 'hab/km²', description: "Densité de population (habitants par km²)." },
+  { id: 'agriculturalLand', label: "Terres Agricoles", labelHigher: "Plus fort % de terres agricoles", labelLower: "Plus faible % de terres agricoles", unit: '%', description: "Pourcentage du territoire utilisé pour l'agriculture." },
+  { id: 'landArea', label: "Superficie", labelHigher: "Plus grande superficie", labelLower: "Plus petite superficie", unit: 'km²', description: "Superficie totale des terres." },
+  { id: 'armedForcesSize', label: "Forces Armées", labelHigher: "Plus grandes forces armées", labelLower: "Plus petites forces armées", unit: 'pers.', description: "Taille des forces armées du pays." },
+  { id: 'birthRate', label: "Taux de Natalité", labelHigher: "Plus fort taux de natalité", labelLower: "Plus faible taux de natalité", unit: '‰', description: "Nombre moyen de naissances pour 1000 habitants." },
+  { id: 'co2Emissions', label: "Émissions CO2", labelHigher: "Plus fortes émissions CO2", labelLower: "Plus faibles émissions CO2", unit: 'kt', description: "Émissions totales de dioxyde de carbone." },
+  { id: 'fertilityRate', label: "Taux de Fécondité", labelHigher: "Plus fort taux de fécondité", labelLower: "Plus faible taux de fécondité", unit: 'enf/femme', description: "Nombre moyen d'enfants par femme." },
+  { id: 'forestedArea', label: "Superficie Forestière", labelHigher: "Plus fort % de forêt", labelLower: "Plus faible % de forêt", unit: '%', description: "Pourcentage du territoire recouvert de forêts." },
+  { id: 'gasolinePrice', label: "Prix de l'Essence", labelHigher: "Essence la plus chère", labelLower: "Essence la moins chère", unit: '$', description: "Prix moyen du litre d'essence." },
+  { id: 'gdp', label: "PIB", labelHigher: "Plus fort PIB", labelLower: "Plus faible PIB", unit: '$', description: "Produit Intérieur Brut du pays." },
+  { id: 'infantMortality', label: "Mortalité Infantile", labelHigher: "Plus forte mortalité infantile", labelLower: "Plus faible mortalité infantile", unit: '‰', description: "Décès d'enfants de moins d'un an pour 1000 naissances." },
+  { id: 'lifeExpectancy', label: "Espérance de vie", labelHigher: "Plus longue espérance de vie", labelLower: "Plus courte espérance de vie", unit: 'ans', description: "Espérance de vie moyenne à la naissance." },
+  { id: 'minimumWage', label: "Salaire Minimum", labelHigher: "Salaire minimum le plus haut", labelLower: "Salaire minimum le plus bas", unit: '$', description: "Salaire minimum mensuel." },
+  { id: 'outOfPocketHealthExpenditure', label: "Dépenses de Santé (Hors Assurance)", labelHigher: "Plus fort reste-à-charge", labelLower: "Plus faible reste-à-charge", unit: '%', description: "Part des dépenses de santé payées directement par les patients." },
+  { id: 'physiciansPerThousand', label: "Médecins", labelHigher: "Plus de médecins par hab", labelLower: "Moins de médecins par hab", unit: '/1000', description: "Nombre de médecins pour 1000 habitants." },
+  { id: 'laborForceParticipation', label: "Population Active", labelHigher: "Plus fort taux d'actifs", labelLower: "Plus faible taux d'actifs", unit: '%', description: "Part de la population participant à la force de travail." },
+  { id: 'taxRevenue', label: "Recettes Fiscales", labelHigher: "Plus fortes recettes fiscales", labelLower: "Plus faibles recettes fiscales", unit: '%', description: "Recettes fiscales en pourcentage du PIB." },
+  { id: 'totalTaxRate', label: "Taux d'Imposition", labelHigher: "Plus fort taux d'imposition", labelLower: "Plus faible taux d'imposition", unit: '%', description: "Taux global d'imposition sur les entreprises." },
+  { id: 'unemploymentRate', label: "Chômage", labelHigher: "Plus fort taux de chômage", labelLower: "Plus faible taux de chômage", unit: '%', description: "Taux de chômage." },
+  { id: 'urbanPopulation', label: "Pop. Urbaine", labelHigher: "Plus grande pop. urbaine", labelLower: "Plus petite pop. urbaine", unit: 'hab', description: "Nombre d'habitants vivant en zone urbaine." }
+];
