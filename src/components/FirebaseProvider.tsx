@@ -46,62 +46,71 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    let unsubsUser: (() => void) | null = null;
+    let unsubsCards: (() => void) | null = null;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+      
+      // Clean up previous subscriptions if any
+      if (unsubsUser) unsubsUser();
+      if (unsubsCards) unsubsCards();
+
       if (currentUser) {
         setConnectionStatus('checking');
-        // Initialize user document if not exists
-        const userRef = doc(db, 'users', currentUser.uid);
-        try {
-          // A standard getDoc can come from cache. 
-          // We don't block initialization on a server check, 
-          // but we start monitoring via onSnapshot.
-          const userSnap = await getDoc(userRef);
-          if (!userSnap.exists()) {
-            await setDoc(userRef, {
-              coins: localCoins,
-              highScore: localHighScore || 0,
-              createdAt: serverTimestamp(),
-              updatedAt: serverTimestamp()
-            });
-            // Also sync local cards
-            for (const card of localOwnedCards) {
-               const safeId = card.countryName.replace(/[^a-zA-Z0-9_-]/g, '_');
-               await setDoc(doc(db, `users/${currentUser.uid}/cards/${safeId}`), {
-                 countryName: card.countryName,
-                 obtainedAt: card.obtainedAt,
-                 count: card.count
-               });
-            }
-          }
-        } catch (e) {
-          handleFirestoreError(e, OperationType.GET, 'users');
-        }
+        setLoading(true);
 
-        // Subscribe to user doc
-        const unsubsUser = onSnapshot(userRef, { includeMetadataChanges: true }, (docSnap) => {
+        const userRef = doc(db, 'users', currentUser.uid);
+        
+        // Initial setup - don't block subscriptions on this
+        (async () => {
+          try {
+            const userSnap = await getDoc(userRef);
+            if (!userSnap.exists()) {
+              await setDoc(userRef, {
+                coins: localCoins,
+                highScore: localHighScore || 0,
+                createdAt: serverTimestamp(),
+                updatedAt: serverTimestamp()
+              });
+              
+              for (const card of localOwnedCards) {
+                const safeId = card.countryName.replace(/[^a-zA-Z0-9_-]/g, '_');
+                await setDoc(doc(db, `users/${currentUser.uid}/cards/${safeId}`), {
+                  countryName: card.countryName,
+                  obtainedAt: card.obtainedAt,
+                  count: card.count
+                });
+              }
+            }
+          } catch (e) {
+            handleFirestoreError(e, OperationType.GET, 'users/init');
+          }
+        })();
+
+        // Subscriptions
+        unsubsUser = onSnapshot(userRef, { includeMetadataChanges: true }, (docSnap) => {
           if (docSnap.exists()) {
             const data = docSnap.data();
             setCoins(data.coins);
             setHighScore(data.highScore > 0 ? data.highScore : null);
           }
           
-          // If metadata says it's from the cache and has pending writes, 
-          // it might be offline, but Firestore handles this gracefully.
-          // We consider it 'online' if it ever succeeds in a non-cache-only way or doesn't error.
           if (!docSnap.metadata.fromCache) {
             setConnectionStatus('online');
           }
+          setLoading(false);
         }, (err) => {
-          if (err.message.toLowerCase().includes('offline')) {
+          const isOffline = err.message.toLowerCase().includes('offline');
+          if (isOffline) {
             setConnectionStatus('offline');
           }
           handleFirestoreError(err, OperationType.GET, 'users');
+          setLoading(false);
         });
 
-        // Subscribe to cards subcollection
         const cardsRef = collection(db, `users/${currentUser.uid}/cards`);
-        const unsubsCards = onSnapshot(cardsRef, { includeMetadataChanges: true }, (querySnap) => {
+        unsubsCards = onSnapshot(cardsRef, { includeMetadataChanges: true }, (querySnap) => {
           const cards: OwnedCard[] = [];
           querySnap.forEach((doc) => {
             cards.push(doc.data() as OwnedCard);
@@ -112,26 +121,23 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
             setConnectionStatus('online');
           }
         }, (err) => {
-          if (err.message.toLowerCase().includes('offline')) {
-            setConnectionStatus('offline');
-          }
           handleFirestoreError(err, OperationType.LIST, 'users/cards');
         });
 
-        setLoading(false);
-
-        return () => {
-          unsubsUser();
-          unsubsCards();
-        };
-
       } else {
         setLoading(false);
-        setConnectionStatus('online'); // Local mode is technically "online" with localStorage
+        setConnectionStatus('online'); // Local mode
+        setCoins(localCoins);
+        setHighScore(localHighScore);
+        setOwnedCards(localOwnedCards);
       }
     });
 
-    return unsubscribe;
+    return () => {
+      unsubscribeAuth();
+      if (unsubsUser) unsubsUser();
+      if (unsubsCards) unsubsCards();
+    };
   }, [localCoins, localHighScore, localOwnedCards]);
 
   const updateCoins = async (newCoins: number) => {
@@ -202,6 +208,7 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
     <FirebaseContext.Provider value={{
       user,
       loading,
+      connectionStatus,
       coins: user ? coins : localCoins,
       setCoins: updateCoins,
       highScore: user ? highScore : localHighScore,
