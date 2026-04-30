@@ -191,16 +191,21 @@ export default function App() {
       {/* Alpha Badge & Login Widget */}
       <div className={`absolute top-4 z-50 flex items-center gap-4 transition-all duration-500 ${gameState === 'PLAYING' ? 'left-4' : 'right-4'}`}>
         <LanguageSelector />
-        {user ? (
-          <div className="hidden sm:flex items-center gap-2 bg-max-muted px-3 py-2 rounded-xl border-2 border-white/20 shadow-lg backdrop-blur-sm">
-            <span className="text-xs sm:text-sm font-bold text-white/80 max-w-[100px] sm:max-w-[150px] truncate">{user.displayName || user.email}</span>
-            <button onClick={logout} className="text-xs bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white px-2 py-1 rounded font-bold uppercase transition-colors shrink-0">{t('logout')}</button>
-          </div>
-        ) : (
-          <button onClick={login} className="hidden sm:block text-xs sm:text-sm font-black uppercase tracking-wider bg-accent-cyan text-max-bg border-2 border-accent-cyan hover:bg-transparent hover:text-accent-cyan px-4 py-2 rounded-xl transition-colors shadow-max-cyan shrink-0">
-            {t('login')}
-          </button>
-        )}
+        
+        {/* Only show login button outside of the game on mobile, or always on desktop */}
+        <div className={gameState === 'PLAYING' ? 'hidden sm:block' : 'block'}>
+          {user ? (
+            <div className="flex items-center gap-2 bg-max-muted px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border-2 border-white/20 shadow-lg backdrop-blur-sm">
+              <span className="text-xs sm:text-sm font-bold text-white/80 max-w-[70px] sm:max-w-[150px] truncate">{user.displayName || user.email}</span>
+              <button onClick={logout} className="text-[10px] sm:text-xs bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white px-2 py-0.5 sm:py-1 rounded font-bold uppercase transition-colors shrink-0">{t('logout')}</button>
+            </div>
+          ) : (
+            <button onClick={login} className="text-[10px] sm:text-sm font-black uppercase tracking-wider bg-accent-cyan text-max-bg border-2 border-accent-cyan hover:bg-transparent hover:text-accent-cyan px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl transition-colors shadow-max-cyan shrink-0">
+              {t('login')}
+            </button>
+          )}
+        </div>
+
         {gameState !== 'PLAYING' && (
           <div className="bg-accent-magenta text-white text-xs sm:text-sm font-black px-4 py-2 rounded-xl shadow-max-magenta transform rotate-12 pointer-events-none uppercase border-2 border-white/20 shrink-0 hidden sm:block">
             {t('alpha')}
