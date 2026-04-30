@@ -1,9 +1,9 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { initializeFirestore, doc, getDocFromServer } from 'firebase/firestore';
 
 // Configuration from environment variables
-const getEnvConfig = () => ({
+const envConfig = {
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -11,70 +11,46 @@ const getEnvConfig = () => ({
   firestoreDatabaseId: import.meta.env.VITE_FIREBASE_DATABASE_ID,
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-});
-
-let firebaseApp: any = null;
-let firestoreDb: any = null;
-let firebaseAuth: any = null;
-
-async function getFirebaseConfig() {
-  const envConfig = getEnvConfig();
-  if (envConfig.apiKey) return envConfig;
-
-  try {
-    // We attempt to load the local config file only if env vars are missing.
-    // This is useful for the AI Studio preview environment.
-    // We use a dynamic import to avoid build errors on GitHub where this file is ignored.
-    // @ts-ignore
-    const localConfig = await import('../../firebase-applet-config.json');
-    return localConfig.default;
-  } catch (e) {
-    console.error("Firebase configuration not found in environment variables or local fallback.");
-    return null;
-  }
-}
-
-export const getApp = async () => {
-  if (!firebaseApp) {
-    const config = await getFirebaseConfig();
-    if (!config) throw new Error("Firebase config missing");
-    firebaseApp = initializeApp(config);
-  }
-  return firebaseApp;
 };
 
-export const getDb = async () => {
-  if (!firestoreDb) {
-    const app = await getApp();
-    const config = await getFirebaseConfig();
-    firestoreDb = getFirestore(app, config?.firestoreDatabaseId);
-  }
-  return firestoreDb;
-};
+const isConfigMissing = !envConfig.apiKey || envConfig.apiKey === 'MISSING';
 
-export const getAuthInstance = async () => {
-  if (!firebaseAuth) {
-    const app = await getApp();
-    firebaseAuth = getAuth(app);
-  }
-  return firebaseAuth;
-};
+// Initialize services 
+export const app = initializeApp(isConfigMissing ? { ...envConfig, apiKey: 'MISSING' } : envConfig);
 
-// For backward compatibility and ease of use in most components, 
-// we also export the direct instances. 
-// We use the environment variables which are now set up in .env 
-// and will be available both in AI Studio and on GitHub/Netlify (if configured).
-const finalConfig = getEnvConfig();
+// Using initializeFirestore instead of getFirestore to provide settings
+// experimentalForceLongPolling can help in environments where WebSockets are flaky
+export const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+  host: 'firestore.googleapis.com',
+  ssl: true,
+}, envConfig.firestoreDatabaseId);
 
-// If apiKey is missing here, it means .env wasn't loaded or isn't set.
-if (!finalConfig.apiKey) {
-  console.warn("Firebase API Key is missing! Ensure you've set up VITE_FIREBASE_API_KEY in your environment variables (Netlify/GitHub).");
-}
-
-export const app = initializeApp(finalConfig.apiKey ? finalConfig : { ...finalConfig, apiKey: 'MISSING' });
-export const db = getFirestore(app, finalConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+
+// Connection test 
+async function testConnection() {
+  try {
+    if (!isConfigMissing) {
+      // Use getDocFromServer for a strict server check
+      await getDocFromServer(doc(db, '_connection_test_', 'test'));
+      console.log("Firebase connection successful");
+    }
+  } catch (error) {
+    // If it's a permission error, it's actually "online" but just restricted
+    if (error instanceof Error && error.message.includes('permission')) {
+      console.log("Firebase connection reachable (but restricted by rules)");
+      return;
+    }
+    
+    if (error instanceof Error && (error.message.includes('offline'))) {
+      console.warn("Firestore connection check: Client is offline. This might be temporary or a block in the environment.");
+    }
+  }
+}
+// We don't necessarily need to block on this
+testConnection();
 
 export const loginWithGoogle = async () => {
   try {
@@ -120,8 +96,11 @@ interface FirestoreErrorInfo {
 }
 
 export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const errorMessage = error instanceof Error ? error.message : String(error);
+  const isOffline = errorMessage.toLowerCase().includes('offline');
+
   const errInfo: FirestoreErrorInfo = {
-    error: error instanceof Error ? error.message : String(error),
+    error: errorMessage,
     authInfo: {
       userId: auth.currentUser?.uid,
       email: auth.currentUser?.email,
@@ -136,6 +115,13 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
     operationType,
     path
   };
+
+  if (isOffline) {
+    console.warn('Firestore Offline: ', JSON.stringify(errInfo));
+    // Don't throw for offline errors to allow app logic to continue with local data if possible
+    return;
+  }
+
   console.error('Firestore Error: ', JSON.stringify(errInfo));
   throw new Error(JSON.stringify(errInfo));
 }

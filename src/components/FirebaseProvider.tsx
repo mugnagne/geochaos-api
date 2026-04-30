@@ -7,6 +7,7 @@ import { OwnedCard } from '../types';
 interface FirebaseContextType {
   user: User | null;
   loading: boolean;
+  connectionStatus: 'online' | 'offline' | 'checking';
   coins: number;
   setCoins: (coins: number) => void;
   highScore: number | null;
@@ -28,6 +29,7 @@ export const useFirebase = () => {
 export function FirebaseProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [connectionStatus, setConnectionStatus] = useState<'online' | 'offline' | 'checking'>('checking');
   const [coins, setCoins] = useState<number>(0);
   const [highScore, setHighScore] = useState<number | null>(null);
   const [ownedCards, setOwnedCards] = useState<OwnedCard[]>([]);
@@ -47,9 +49,13 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
+        setConnectionStatus('checking');
         // Initialize user document if not exists
         const userRef = doc(db, 'users', currentUser.uid);
         try {
+          // A standard getDoc can come from cache. 
+          // We don't block initialization on a server check, 
+          // but we start monitoring via onSnapshot.
           const userSnap = await getDoc(userRef);
           if (!userSnap.exists()) {
             await setDoc(userRef, {
@@ -60,7 +66,6 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
             });
             // Also sync local cards
             for (const card of localOwnedCards) {
-               // countryName shouldn't contain spaces for document ID, we use safe id
                const safeId = card.countryName.replace(/[^a-zA-Z0-9_-]/g, '_');
                await setDoc(doc(db, `users/${currentUser.uid}/cards/${safeId}`), {
                  countryName: card.countryName,
@@ -74,23 +79,44 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
         }
 
         // Subscribe to user doc
-        const unsubsUser = onSnapshot(userRef, (docSnap) => {
+        const unsubsUser = onSnapshot(userRef, { includeMetadataChanges: true }, (docSnap) => {
           if (docSnap.exists()) {
             const data = docSnap.data();
             setCoins(data.coins);
             setHighScore(data.highScore > 0 ? data.highScore : null);
           }
-        }, (err) => handleFirestoreError(err, OperationType.GET, 'users'));
+          
+          // If metadata says it's from the cache and has pending writes, 
+          // it might be offline, but Firestore handles this gracefully.
+          // We consider it 'online' if it ever succeeds in a non-cache-only way or doesn't error.
+          if (!docSnap.metadata.fromCache) {
+            setConnectionStatus('online');
+          }
+        }, (err) => {
+          if (err.message.toLowerCase().includes('offline')) {
+            setConnectionStatus('offline');
+          }
+          handleFirestoreError(err, OperationType.GET, 'users');
+        });
 
         // Subscribe to cards subcollection
         const cardsRef = collection(db, `users/${currentUser.uid}/cards`);
-        const unsubsCards = onSnapshot(cardsRef, (querySnap) => {
+        const unsubsCards = onSnapshot(cardsRef, { includeMetadataChanges: true }, (querySnap) => {
           const cards: OwnedCard[] = [];
           querySnap.forEach((doc) => {
             cards.push(doc.data() as OwnedCard);
           });
           setOwnedCards(cards);
-        }, (err) => handleFirestoreError(err, OperationType.LIST, 'users/cards'));
+          
+          if (!querySnap.metadata.fromCache) {
+            setConnectionStatus('online');
+          }
+        }, (err) => {
+          if (err.message.toLowerCase().includes('offline')) {
+            setConnectionStatus('offline');
+          }
+          handleFirestoreError(err, OperationType.LIST, 'users/cards');
+        });
 
         setLoading(false);
 
@@ -101,6 +127,7 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
 
       } else {
         setLoading(false);
+        setConnectionStatus('online'); // Local mode is technically "online" with localStorage
       }
     });
 

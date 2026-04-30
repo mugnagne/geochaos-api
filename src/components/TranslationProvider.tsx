@@ -16,8 +16,8 @@ export function TranslationProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
     const saved = localStorage.getItem('geochaos_lang');
     if (saved === 'fr' || saved === 'en') return saved;
-    // Auto detect from browser
-    return navigator.language.startsWith('fr') ? 'fr' : 'en';
+    // Default to French
+    return navigator.language.startsWith('en') ? 'en' : 'fr';
   });
 
   const setLanguage = (lang: Language) => {

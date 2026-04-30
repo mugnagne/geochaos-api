@@ -60,7 +60,7 @@ function AnimatedRank({ targetRank }: { targetRank: number }) {
 }
 
 export default function App() {
-  const { user, login, logout, coins, setCoins, highScore, setHighScore, ownedCards, loading } = useFirebase();
+  const { user, login, logout, coins, setCoins, highScore, setHighScore, ownedCards, loading, connectionStatus } = useFirebase();
   const { t, getCategoryTranslation, getFormattedCountryName, language } = useTranslation();
 
   const [gameState, setGameState] = useState<GameState>('HOME');
@@ -190,12 +190,26 @@ export default function App() {
     <div className="min-h-screen w-full relative p-4 md:p-8 flex flex-col items-center justify-center overflow-x-hidden selection:bg-accent-magenta selection:text-white">
       {/* Alpha Badge & Login Widget */}
       <div className={`absolute top-4 z-50 flex items-center gap-4 transition-all duration-500 ${gameState === 'PLAYING' ? 'left-4' : 'right-4'}`}>
-        <LanguageSelector />
+        {gameState !== 'PLAYING' && <LanguageSelector />}
         
         {/* Only show login button outside of the game on mobile, or always on desktop */}
         <div className={gameState === 'PLAYING' ? 'hidden sm:block' : 'block'}>
           {user ? (
-            <div className="flex items-center gap-2 bg-max-muted px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border-2 border-white/20 shadow-lg backdrop-blur-sm">
+            <div className="flex items-center gap-2 bg-max-muted px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border-2 border-white/20 shadow-lg backdrop-blur-sm group relative">
+              {/* Connection Status Tooltip/Indicator */}
+              <div className="flex items-center gap-1.5 pr-1 mr-1 border-r border-white/10">
+                <div className={`w-2 h-2 rounded-full ${
+                  connectionStatus === 'online' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 
+                  connectionStatus === 'offline' ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)] animate-pulse' : 
+                  'bg-yellow-500 animate-pulse'
+                }`} />
+                <div className="absolute top-full left-0 mt-2 bg-max-bg border border-white/20 p-2 rounded-lg text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[60]">
+                  {connectionStatus === 'online' ? t('sync_online') : 
+                   connectionStatus === 'offline' ? t('sync_offline') : 
+                   t('sync_checking')}
+                </div>
+              </div>
+
               <span className="text-xs sm:text-sm font-bold text-white/80 max-w-[70px] sm:max-w-[150px] truncate">{user.displayName || user.email}</span>
               <button onClick={logout} className="text-[10px] sm:text-xs bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white px-2 py-0.5 sm:py-1 rounded font-bold uppercase transition-colors shrink-0">{t('logout')}</button>
             </div>
