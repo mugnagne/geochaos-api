@@ -406,7 +406,7 @@ export default function App() {
                             <img 
                               src={currentCountry.flagUrl || `https://flagcdn.com/w160/${currentCountry.abbreviation.toLowerCase()}.png`} 
                               className="w-full h-full object-cover"
-                              alt="Flag"
+                              alt={`Drapeau de ${getFormattedCountryName(currentCountry?.abbreviation || '', currentCountry?.name || '')}`}
                             />
                           )}
                         </div>
@@ -679,6 +679,20 @@ export default function App() {
           </motion.div>
         )}
       </main>
+
+      <footer className="relative z-10 w-full max-w-7xl mx-auto py-8 px-4 text-center text-white/30 text-xs sm:text-sm font-medium border-t border-white/5">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div>
+            <p className="font-bold text-white/50 mb-1 tracking-widest uppercase">GEOCHAOS</p>
+            <p>{t('subtitle')}</p>
+          </div>
+          <div className="flex gap-6 uppercase tracking-tighter">
+            <span className="hover:text-accent-cyan cursor-default transition-colors">© 2024 GEOCHAOS</span>
+            <span className="hover:text-accent-magenta cursor-default transition-colors">Open Data Géo</span>
+            <span className="hover:text-accent-yellow cursor-default transition-colors">Privacy & Fairness</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

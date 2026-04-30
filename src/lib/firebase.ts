@@ -3,7 +3,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/
 import { getFirestore } from 'firebase/firestore';
 
 // Configuration from environment variables
-const envConfig = {
+const getEnvConfig = () => ({
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -11,19 +11,68 @@ const envConfig = {
   firestoreDatabaseId: import.meta.env.VITE_FIREBASE_DATABASE_ID,
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-};
+});
 
-// Simple check: if we have the apiKey from env, use it.
-// In this setup, .env is the primary source of truth.
-let firebaseConfig = envConfig;
+let firebaseApp: any = null;
+let firestoreDb: any = null;
+let firebaseAuth: any = null;
 
-// If we are missing keys, we show a warning (the user will need to set them up on GitHub)
-if (!firebaseConfig.apiKey) {
-  console.warn("Firebase configuration missing in environment variables. If you are in AI Studio, ensure Firebase is setup. If on GitHub, add Secrets.");
+async function getFirebaseConfig() {
+  const envConfig = getEnvConfig();
+  if (envConfig.apiKey) return envConfig;
+
+  try {
+    // We attempt to load the local config file only if env vars are missing.
+    // This is useful for the AI Studio preview environment.
+    // We use a dynamic import to avoid build errors on GitHub where this file is ignored.
+    // @ts-ignore
+    const localConfig = await import('../../firebase-applet-config.json');
+    return localConfig.default;
+  } catch (e) {
+    console.error("Firebase configuration not found in environment variables or local fallback.");
+    return null;
+  }
 }
 
-export const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+export const getApp = async () => {
+  if (!firebaseApp) {
+    const config = await getFirebaseConfig();
+    if (!config) throw new Error("Firebase config missing");
+    firebaseApp = initializeApp(config);
+  }
+  return firebaseApp;
+};
+
+export const getDb = async () => {
+  if (!firestoreDb) {
+    const app = await getApp();
+    const config = await getFirebaseConfig();
+    firestoreDb = getFirestore(app, config?.firestoreDatabaseId);
+  }
+  return firestoreDb;
+};
+
+export const getAuthInstance = async () => {
+  if (!firebaseAuth) {
+    const app = await getApp();
+    firebaseAuth = getAuth(app);
+  }
+  return firebaseAuth;
+};
+
+// For backward compatibility and ease of use in most components, 
+// we also export the direct instances. 
+// We use the environment variables which are now set up in .env 
+// and will be available both in AI Studio and on GitHub/Netlify (if configured).
+const finalConfig = getEnvConfig();
+
+// If apiKey is missing here, it means .env wasn't loaded or isn't set.
+if (!finalConfig.apiKey) {
+  console.warn("Firebase API Key is missing! Ensure you've set up VITE_FIREBASE_API_KEY in your environment variables (Netlify/GitHub).");
+}
+
+export const app = initializeApp(finalConfig.apiKey ? finalConfig : { ...finalConfig, apiKey: 'MISSING' });
+export const db = getFirestore(app, finalConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 

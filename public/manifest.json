@@ -1,0 +1,16 @@
+{
+  "name": "GEOCHAOS",
+  "short_name": "GEOCHAOS",
+  "description": "Le jeu de géographie dynamique et explosif !",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#FF0080",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

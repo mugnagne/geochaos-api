@@ -1,0 +1,730 @@
+[
+  {
+    "name": "Afghanistan",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Albania",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Algeria",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Andorra",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Angola",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Antigua and Barbuda",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Argentina",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Armenia",
+    "rarity": "Rare"
+  },
+  {
+    "name": "AudenciaLand",
+    "rarity": "GeoChaos"
+  },
+  {
+    "name": "Australia",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Austria",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Azerbaijan",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Bahamas",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Bahrain",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Bangladesh",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Barbados",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Belarus",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Belgium",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Belize",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Benin",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Bhutan",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Bolivia",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Bosnia and Herzegovina",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Botswana",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Bretagne",
+    "rarity": "GeoChaos"
+  },
+  {
+    "name": "Brunei",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Bulgaria",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Cabo Verde",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Central African Republic",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Chad",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Commune de Paris",
+    "rarity": "GeoChaos"
+  },
+  {
+    "name": "Comoros",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Croatia",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Cyprus",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Czechia",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Djibouti",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Dominica",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Dominican Republic",
+    "rarity": "Commun"
+  },
+  {
+    "name": "El Salvador",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Equatorial Guinea",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Eritrea",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Eswatini",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Ethiopia",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Fiji",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Finland",
+    "rarity": "Rare"
+  },
+  {
+    "name": "France",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Gabon",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Gambia",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Georgia",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Germany",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Ghana",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Greece",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Grenada",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Guatemala",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Guinea",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Guinea-Bissau",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Guyana",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Haiti",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Honduras",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Hungary",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Iceland",
+    "rarity": "Légendaire"
+  },
+  {
+    "name": "India",
+    "rarity": "Légendaire"
+  },
+  {
+    "name": "Indonesia",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Iran",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Iraq",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Ireland",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Israel",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Italy",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Jamaica",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Japan",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Jordan",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Kazakhstan",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Kenya",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Kiribati",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Kuwait",
+    "rarity": "Légendaire"
+  },
+  {
+    "name": "Kyrgyzstan",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Laos",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Latvia",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Lebanon",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Lesotho",
+    "rarity": "Légendaire"
+  },
+  {
+    "name": "Liberia",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Libya",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Liechtenstein",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Lithuania",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Luxembourg",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Madagascar",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Malawi",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Malaysia",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Maldives",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Mali",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Malta",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Marshall Islands",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Mauritania",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Mauritius",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Mexico",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Micronesia",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Moldova",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Monaco",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Mongolia",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Montenegro",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Morocco",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Mozambique",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Myanmar",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Namibia",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Nauru",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Nepal",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Netherlands",
+    "rarity": "Commun"
+  },
+  {
+    "name": "New Zealand",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Nicaragua",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Niger",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Nigeria",
+    "rarity": "Légendaire"
+  },
+  {
+    "name": "Nilfgaard",
+    "rarity": "GeoChaos"
+  },
+  {
+    "name": "North Korea",
+    "rarity": "Rare"
+  },
+  {
+    "name": "North Macedonia",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Norway",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Oman",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Pakistan",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Palau",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Panama",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Papua New Guinea",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Paraguay",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Peru",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Philippines",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Poland",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Portugal",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Qatar",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Romania",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Russia",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Rwanda",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Saint Kitts and Nevis",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Saint Lucia",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Saint Vincent and the Grenadines",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Samoa",
+    "rarity": "Rare"
+  },
+  {
+    "name": "San Marino",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Sao Tome and Principe",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Saudi Arabia",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Senegal",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Serbia",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Seychelles",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Sierra Leone",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Singapore",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Slovakia",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Slovenia",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Solomon Islands",
+    "rarity": "Légendaire"
+  },
+  {
+    "name": "Somalia",
+    "rarity": "Épique"
+  },
+  {
+    "name": "South Africa",
+    "rarity": "Rare"
+  },
+  {
+    "name": "South Korea",
+    "rarity": "Commun"
+  },
+  {
+    "name": "South Sudan",
+    "rarity": "Épique"
+  },
+  {
+    "name": "Spain",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Sri Lanka",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Sudan",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Suriname",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Sweden",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Switzerland",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Syria",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Taiwan",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Tajikistan",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Tanzania",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Thailand",
+    "rarity": "Légendaire"
+  },
+  {
+    "name": "Timor-Leste",
+    "rarity": "Légendaire"
+  },
+  {
+    "name": "Togo",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Tonga",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Trinidad and Tobago",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Tunisia",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Turkey",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Turkmenistan",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Tuvalu",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Uganda",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Ukraine",
+    "rarity": "Rare"
+  },
+  {
+    "name": "United Arab Emirates",
+    "rarity": "Rare"
+  },
+  {
+    "name": "United Kingdom",
+    "rarity": "Épique"
+  },
+  {
+    "name": "URSS",
+    "rarity": "GeoChaos"
+  },
+  {
+    "name": "Uruguay",
+    "rarity": "Rare"
+  },
+  {
+    "name": "USA",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Uzbekistan",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Vanuatu",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Vatican City",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Venezuela",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Vietnam",
+    "rarity": "Légendaire"
+  },
+  {
+    "name": "Yemen",
+    "rarity": "Rare"
+  },
+  {
+    "name": "Zambia",
+    "rarity": "Commun"
+  },
+  {
+    "name": "Zimbabwe",
+    "rarity": "Légendaire"
+  }
+]
