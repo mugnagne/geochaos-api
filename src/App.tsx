@@ -12,10 +12,12 @@ import { Info, MapPin, Languages, Coins, Landmark, HelpCircle, XCircle, X } from
 import { getDailySeed, mulberry32 } from './lib/dailySeed';
 import { Shop } from './components/Shop';
 import { Collection } from './components/Collection';
+import { BonusWheel } from './components/BonusWheel';
 import { useFirebase } from './components/FirebaseProvider';
 import { useTranslation } from './components/TranslationProvider';
 import { LanguageSelector } from './components/LanguageSelector';
 import { Leaderboard } from './components/Leaderboard';
+import { Bonus } from './types';
 
 const getFrenchName = (abbreviation: string | undefined, fallback: string) => {
   try {
@@ -77,6 +79,10 @@ export default function App() {
   const [infoCategory, setInfoCategory] = useState<GameCategory | null>(null);
   const [pointLoss, setPointLoss] = useState<number | null>(null);
   const [calculatedRound, setCalculatedRound] = useState<{ category: GameCategory, rank: number, value: number, isMissing?: boolean } | null>(null);
+  const [activeBonus, setActiveBonus] = useState<Bonus | null>(null);
+  const [bonusUsed, setBonusUsed] = useState<boolean>(false);
+  const [doubleNextRound, setDoubleNextRound] = useState<boolean>(false);
+  const [nextCountry, setNextCountry] = useState<Country | null>(null);
 
   const totalRanks = useMemo(() => rounds.reduce((acc, r) => acc + r.rank, 0), [rounds]);
   const currentScore = 200 - totalRanks;
@@ -126,29 +132,147 @@ export default function App() {
     setAvailableCategories(catsToUse);
     setRounds([]);
     setCurrentCountry(firstCountry);
+    setNextCountry(gameCountries[Math.floor(Math.random() * gameCountries.length)]);
+    setActiveBonus(null);
+    setBonusUsed(false);
+    setDoubleNextRound(false);
+    setGameState('BONUS_WHEEL');
+  }, []);
+
+  const handleBonusSelected = (bonus: Bonus) => {
+    setActiveBonus(bonus);
     setGameState('PLAYING');
     setRevealStatus('SHUFFLING');
     setTimeout(() => setRevealStatus('REVEALED'), 1500);
-  }, []);
+  };
 
   const handleRevealComplete = () => {
     setRevealStatus('REVEALED');
   };
 
+  const handleActivateBonus = useCallback(() => {
+    if (!activeBonus || bonusUsed || revealStatus !== 'REVEALED') return;
+    
+    if (activeBonus.id === 'RELOCATION') {
+      const gameCountries = COUNTRIES.filter(c => getCountryRarity(c.name) !== 'GEOCHAOS');
+      const usedCountryNames = rounds.map(r => r.country.name);
+      
+      let availableCountries = gameCountries.filter(c => !usedCountryNames.includes(c.name));
+      if (nextCountry && availableCountries.length > 1) {
+         availableCountries = availableCountries.filter(c => c.name !== nextCountry.name);
+      }
+
+      const newCountry = availableCountries[Math.floor(Math.random() * availableCountries.length)] || gameCountries[0];
+      
+      setRevealStatus('SHUFFLING');
+      setShowInfo(false);
+      setTimeout(() => {
+        setCurrentCountry(newCountry);
+      }, 750);
+      setTimeout(() => setRevealStatus('REVEALED'), 1500);
+
+      setBonusUsed(true);
+    } else if (activeBonus.id === 'REROLL') {
+      const usedCategoryIds = rounds.map(r => r.category.id);
+      const remainingUnplayed = availableCategories.filter(c => !usedCategoryIds.includes(c.id));
+      if (remainingUnplayed.length > 0) {
+        // pick a random unplayed category
+        const catToReplaceIndex = Math.floor(Math.random() * remainingUnplayed.length);
+        const catToReplace = remainingUnplayed[catToReplaceIndex];
+        
+        // pick a completely new category from all categories
+        const unassignedCategories = CATEGORIES.filter(c => !availableCategories.find(a => a.id === c.id));
+        if (unassignedCategories.length > 0) {
+          const newCatBase = unassignedCategories[Math.floor(Math.random() * unassignedCategories.length)];
+          const newCat: GameCategory = {
+            ...newCatBase,
+            direction: Math.random() > 0.5 ? 'HIGHER' : 'LOWER'
+          };
+          
+          setAvailableCategories(cats => cats.map(c => c.id === catToReplace.id ? newCat : c));
+          setBonusUsed(true);
+        }
+      }
+    } else if (activeBonus.id === 'ZOMBIE') {
+      setBonusUsed(true);
+    } else if (activeBonus.id === 'CLAIRVOYANT') {
+      setBonusUsed(true);
+    } else if (activeBonus.id === 'DOUBLE_OR_NOTHING') {
+      setBonusUsed(true);
+      setDoubleNextRound(true);
+
+      // Skip the current round
+      // advance to next round but simulate 0 rank loss
+      const fakeCategory: GameCategory = { id: 'SKIP' as any, direction: 'HIGHER' };
+      const newRounds = [...rounds, { country: currentCountry!, category: fakeCategory, rank: 0, value: 0 }];
+      
+      if (newRounds.length === 6) {
+        setRevealStatus('ENDING');
+        setTimeout(() => {
+          setGameState('END');
+          const finalScore = 200 - newRounds.reduce((acc, r) => acc + r.rank, 0);
+          if (finalScore >= 0) {
+            setCoins(c => (c||0) + 15);
+            if (highScore === null || finalScore > highScore) setHighScore(finalScore);
+          } else {
+            setCoins(c => (c||0) + 5);
+          }
+        }, 1000);
+      } else {
+        const gameCountries = COUNTRIES.filter(c => getCountryRarity(c.name) !== 'GEOCHAOS');
+        const usedCountryNames = newRounds.map(r => r.country.name);
+        const availableCountries = gameCountries.filter(c => !usedCountryNames.includes(c.name));
+        const _nextCountry = availableCountries[Math.floor(Math.random() * availableCountries.length)] || gameCountries[0];
+        setNextCountry(_nextCountry);
+        
+        setRevealStatus('SHUFFLING');
+        setShowInfo(false);
+        setTimeout(() => {
+          setCurrentCountry(nextCountry || _nextCountry);
+        }, 750);
+        setTimeout(() => setRevealStatus('REVEALED'), 1500);
+      }
+
+    } else if (activeBonus.id === 'FORESHADOWING') {
+      setBonusUsed(true);
+    }
+
+  }, [activeBonus, bonusUsed, availableCategories, rounds, currentCountry, nextCountry, revealStatus, highScore]);
+
   const handleCategorySelect = useCallback((category: GameCategory) => {
     if (revealStatus !== 'REVEALED' || !currentCountry) return;
 
-    const rank = calculateRank(currentCountry, category, COUNTRIES);
+    const isUsed = rounds.some(r => r.category.id === category.id);
+    let zombieTriggered = false;
+    if (isUsed) {
+      if (activeBonus?.id === 'ZOMBIE' && !bonusUsed) {
+        zombieTriggered = true;
+      } else {
+        return;
+      }
+    }
+
+    let rank = calculateRank(currentCountry, category, COUNTRIES);
+    if (doubleNextRound) {
+      rank = rank * 2;
+    }
     const value = currentCountry[category.id] as number;
     const isMissing = !!currentCountry.isMissing?.[category.id];
 
     setCalculatedRound({ category, rank, value, isMissing });
     setRevealStatus('CALCULATING');
+    if (zombieTriggered) {
+      setBonusUsed(true);
+    }
 
     // Durée de l'animation de calcul : 1.5s
     setTimeout(() => {
       setRevealStatus('RESULT');
       setPointLoss(rank);
+
+      if (doubleNextRound) {
+        setDoubleNextRound(false);
+      }
 
       const newRounds = [...rounds, { country: currentCountry, category, rank, value }];
       
@@ -160,32 +284,41 @@ export default function App() {
 
         if (newRounds.length === 6) {
           setRevealStatus('ENDING');
+          if (bonusUsed) {
+            setActiveBonus(null);
+            setBonusUsed(false);
+          }
           setTimeout(() => {
             setGameState('END');
             const finalScore = 200 - newRounds.reduce((acc, r) => acc + r.rank, 0);
             if (finalScore >= 0) {
-              setCoins(c => c + 15);
+              setCoins(c => (c||0) + 15);
               if (highScore === null || finalScore > highScore) setHighScore(finalScore);
             } else {
-              setCoins(c => c + 5);
+              setCoins(c => (c||0) + 5);
             }
           }, 1000);
         } else {
           const gameCountries = COUNTRIES.filter(c => getCountryRarity(c.name) !== 'GEOCHAOS');
           const usedCountryNames = newRounds.map(r => r.country.name);
           const availableCountries = gameCountries.filter(c => !usedCountryNames.includes(c.name));
-          const nextCountry = availableCountries[Math.floor(Math.random() * availableCountries.length)] || gameCountries[0];
+          const _nextCountry = availableCountries[Math.floor(Math.random() * availableCountries.length)] || gameCountries[0];
           
+          setNextCountry(_nextCountry);
           setRevealStatus('SHUFFLING');
           setShowInfo(false);
+          if (bonusUsed) {
+            setActiveBonus(null);
+            setBonusUsed(false);
+          }
           setTimeout(() => {
-            setCurrentCountry(nextCountry);
+            setCurrentCountry(nextCountry || _nextCountry);
           }, 750);
           setTimeout(() => setRevealStatus('REVEALED'), 1500);
         }
       }, 1500);
     }, 1500);
-  }, [currentCountry, rounds, revealStatus, gameMode, highScore]);
+  }, [currentCountry, rounds, revealStatus, gameMode, highScore, doubleNextRound, nextCountry]);
 
   return (
     <div className="min-h-screen w-full relative p-4 md:p-8 flex flex-col items-center justify-center overflow-x-hidden selection:bg-accent-magenta selection:text-white">
@@ -369,6 +502,18 @@ export default function App() {
           </motion.div>
         )}
 
+        {gameState === 'BONUS_WHEEL' && (
+          <motion.div
+            key="bonusWheel"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.1 }}
+            className="w-full flex justify-center items-center h-full z-10"
+          >
+            <BonusWheel onBonusSelected={handleBonusSelected} />
+          </motion.div>
+        )}
+
         {gameState === 'PLAYING' && (
           <motion.div
             key="playing"
@@ -407,6 +552,52 @@ export default function App() {
                 </AnimatePresence>
               </div>
             </div>
+
+            {activeBonus && (
+              <div className="lg:col-span-12 flex flex-col md:flex-row items-center justify-between bg-max-bg/90 border-2 sm:border-4 border-accent-cyan p-4 rounded-xl shadow-max-cyan gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="bg-accent-cyan p-3 rounded-xl">
+                    <span className="font-black text-white">{activeBonus.name}</span>
+                  </div>
+                  <p className="text-sm font-bold text-gray-300 flex-1 max-w-sm">{activeBonus.description}</p>
+                </div>
+                {!bonusUsed && activeBonus.id !== 'ZOMBIE' && (
+                  <MaxButton 
+                    className="!border-0 !shadow-none bg-transparent text-accent-yellow hover:bg-accent-yellow/20 text-sm py-2 px-4 shrink-0"
+                    onClick={() => {
+                        handleActivateBonus();
+                    }}
+                  >
+                    Utiliser le bonus
+                  </MaxButton>
+                )}
+                {activeBonus.id === 'ZOMBIE' && !bonusUsed && (
+                   <div className="text-accent-yellow font-bold uppercase text-sm border-2 border-accent-yellow px-4 py-2 rounded-xl">
+                      Cliquez sur une catégorie utilisée
+                   </div>
+                )}
+                {activeBonus.id === 'CLAIRVOYANT' && bonusUsed && (
+                   <div className="text-accent-cyan font-bold text-sm border-2 border-accent-cyan px-4 py-2 rounded-xl">
+                      Stats révélées
+                   </div>
+                )}
+                {activeBonus.id === 'FORESHADOWING' && bonusUsed && nextCountry && (
+                   <div className="text-accent-purple font-bold text-sm border-2 border-accent-purple px-4 py-2 rounded-xl">
+                      Prochain : {getFormattedCountryName(nextCountry.abbreviation || '', nextCountry.name || '')}
+                   </div>
+                )}
+                {activeBonus.id === 'DOUBLE_OR_NOTHING' && bonusUsed && (
+                   <div className="text-accent-yellow font-bold text-sm border-2 border-accent-yellow px-4 py-2 rounded-xl animate-pulse">
+                      Points x2 pour cette manche !
+                   </div>
+                )}
+                {bonusUsed && activeBonus.id !== 'CLAIRVOYANT' && activeBonus.id !== 'FORESHADOWING' && activeBonus.id !== 'DOUBLE_OR_NOTHING' && (
+                  <div className="text-gray-500 font-bold uppercase text-sm border-2 border-gray-500 px-4 py-2 rounded-xl">
+                    Utilisé
+                  </div>
+                )}
+              </div>
+            )}
 
             {gameMode === 'DAILY' && (
               <div className="lg:col-span-12 bg-accent-yellow/20 border-2 border-accent-yellow p-3 rounded-xl text-center shadow-max-yellow animate-pulse">
@@ -552,6 +743,8 @@ export default function App() {
                       <div className="flex flex-col sm:grid sm:grid-cols-2 gap-2 sm:gap-4">
                         {availableCategories.map((cat, idx) => {
                           const isUsed = rounds.some(r => r.category.id === cat.id);
+                          const canZombie = activeBonus?.id === 'ZOMBIE' && !bonusUsed && isUsed;
+                          const isDisabled = isUsed && !canZombie;
                           const colors = ['magenta', 'cyan', 'yellow', 'orange', 'purple'];
                           const accent = colors[idx % colors.length];
                           const catT = getCategoryTranslation(cat.id);
@@ -562,22 +755,22 @@ export default function App() {
                               className="relative"
                             >
                               <motion.button
-                                disabled={isUsed}
-                                whileHover={!isUsed ? { scale: 1.02, filter: 'brightness(1.1)' } : {}}
-                                whileTap={!isUsed ? { scale: 0.98 } : {}}
+                                disabled={isDisabled}
+                                whileHover={!isDisabled ? { scale: 1.02, filter: 'brightness(1.1)' } : {}}
+                                whileTap={!isDisabled ? { scale: 0.98 } : {}}
                                 onClick={() => handleCategorySelect(cat)}
                                 className={`relative w-full p-3 sm:p-4 lg:p-6 flex flex-row lg:flex-col items-center lg:items-start justify-between rounded-xl lg:rounded-2xl border-2 sm:border-4 text-left group transition-all duration-300 min-h-[4.5rem] sm:min-h-[5rem] lg:min-h-[11rem] overflow-hidden
-                                  ${isUsed 
+                                  ${isUsed && !canZombie
                                     ? 'border-gray-600 bg-gray-600/20 grayscale opacity-40 cursor-not-allowed font-black' 
-                                    : `border-accent-${accent} bg-max-muted hover:shadow-max-${accent}`
+                                    : canZombie ? 'border-accent-yellow bg-accent-yellow/20 hover:shadow-max-yellow' : `border-accent-${accent} bg-max-muted hover:shadow-max-${accent}`
                                   }
                                 `}
                               >
                               <div className="flex items-center lg:items-start lg:justify-between lg:w-full gap-2 w-full pr-2 lg:mb-4">
-                                <h3 className={`font-black text-sm sm:text-base md:text-lg lg:text-xl uppercase leading-tight lg:leading-snug truncate lg:whitespace-normal lg:overflow-visible ${isUsed ? 'text-gray-500' : 'text-white'}`}>
+                                <h3 className={`font-black text-sm sm:text-base md:text-lg lg:text-xl uppercase leading-tight lg:leading-snug truncate lg:whitespace-normal lg:overflow-visible ${isUsed && !canZombie ? 'text-gray-500' : canZombie ? 'text-accent-yellow' : 'text-white'}`}>
                                   {cat.direction === 'HIGHER' ? catT.labelHigher : catT.labelLower}
                                 </h3>
-                                {!isUsed && (
+                                {!isDisabled && (
                                   <div
                                     onClick={(e) => {
                                       e.stopPropagation();
@@ -590,7 +783,7 @@ export default function App() {
                                 )}
                               </div>
                               <div className="flex items-center lg:justify-between lg:w-full gap-2 shrink-0 lg:mt-auto">
-                                {!isUsed && (
+                                {!isDisabled && (
                                   <>
                                     <div className="text-accent-cyan font-bold text-[10px] sm:text-xs lg:text-sm uppercase bg-max-bg/50 px-2 py-1 lg:px-3 lg:py-2 rounded hidden sm:flex items-center backdrop-blur-sm self-start w-fit">
                                        {t('ranking_this_country')} <ArrowRight className="ml-1 w-3 h-3 lg:w-4 lg:h-4 lg:ml-2" />
@@ -606,12 +799,22 @@ export default function App() {
                                     </div>
                                   </>
                                 )}
-                                {isUsed && (
+                                {isUsed && !canZombie && (
                                    <div className="lg:absolute lg:inset-0 lg:flex lg:items-center lg:justify-center lg:pointer-events-none">
                                       <span className="text-sm sm:text-base lg:text-4xl font-black text-white/30 lg:text-white/10 -rotate-12 px-2 shrink-0">{t('used')}</span>
                                    </div>
                                 )}
+                                {canZombie && (
+                                  <div className="lg:absolute lg:inset-0 lg:flex lg:items-center lg:justify-center lg:pointer-events-none">
+                                      <span className="text-sm sm:text-base lg:text-3xl font-black text-accent-yellow -rotate-12 px-2 shrink-0">Zombie</span>
+                                  </div>
+                                )}
                               </div>
+                              {activeBonus?.id === 'CLAIRVOYANT' && bonusUsed && currentCountry && (
+                                <div className="absolute font-black text-accent-cyan bottom-2 right-2 text-xs sm:text-sm bg-max-bg/80 px-2 rounded backdrop-blur">
+                                  {currentCountry.isMissing?.[cat.id] ? '≈ ' : ''}{(currentCountry[cat.id] as number).toLocaleString(language === 'fr' ? 'fr-FR' : 'en-US')} {catT.unit}
+                                </div>
+                              )}
                               </motion.button>
                             </motion.div>
                           );
@@ -633,13 +836,15 @@ export default function App() {
                     className="min-w-[200px] w-64 bg-max-muted border-2 border-accent-purple rounded-xl p-4 flex flex-col items-center justify-center text-center shadow-max-cyan shrink-0"
                   >
                     <span className="text-[10px] md:text-xs font-black text-accent-magenta uppercase mb-2 bg-max-bg/40 px-2 py-1 rounded">
-                      {round.category.direction === 'HIGHER' ? getCategoryTranslation(round.category.id).labelHigher : getCategoryTranslation(round.category.id).labelLower}
+                      {round.category.id === 'SKIP' ? 'Bonus Quitte ou Double' : (round.category.direction === 'HIGHER' ? getCategoryTranslation(round.category.id).labelHigher : getCategoryTranslation(round.category.id).labelLower)}
                     </span>
                     <span className="text-lg font-bold truncate w-full px-2 mb-1">
-                       {getFormattedCountryName(round.country.abbreviation, round.country.name)}
+                       {round.category.id === 'SKIP' ? 'Manche Passée' : getFormattedCountryName(round.country.abbreviation, round.country.name)}
                     </span>
                     <div className="text-sm font-medium text-white/70">
-                      {round.value !== null && round.value !== undefined ? (
+                      {round.category.id === 'SKIP' ? (
+                          <span className="text-accent-yellow italic">x2 Prochain Tour</span>
+                      ) : round.value !== null && round.value !== undefined ? (
                         <>
                           {round.country.isMissing?.[round.category.id] ? '≈ ' : ''}{round.value.toLocaleString(language === 'fr' ? 'fr-FR' : 'en-US')} {getCategoryTranslation(round.category.id).unit}
                         </>
@@ -648,7 +853,7 @@ export default function App() {
                       )}
                     </div>
                     <div className="text-3xl font-black text-accent-yellow mt-3 bg-max-bg/50 px-4 py-2 rounded-xl border border-accent-yellow/20">
-                      #{round.rank} <span className="text-sm text-white/50">/ {COUNTRIES.length}</span>
+                      {round.category.id === 'SKIP' ? '-' : `#${round.rank}`} {round.category.id !== 'SKIP' && <span className="text-sm text-white/50">/ {COUNTRIES.length}</span>}
                     </div>
                   </motion.div>
                 ))}
@@ -695,10 +900,10 @@ export default function App() {
                    {rounds.map((r, i) => (
                      <div key={i} className="flex justify-between items-center border-b-[1px] border-dashed border-max-bg/50 pb-2 text-sm sm:text-base">
                        <div className="flex flex-col text-left">
-                         <span className="font-bold">{getFormattedCountryName(r.country.abbreviation, r.country.name)}</span>
-                         <span className="text-[10px] text-white/50 uppercase">{r.category.direction === 'HIGHER' ? getCategoryTranslation(r.category.id).labelHigher : getCategoryTranslation(r.category.id).labelLower}</span>
+                         <span className="font-bold">{r.category.id === 'SKIP' ? 'Manche Passée' : getFormattedCountryName(r.country.abbreviation, r.country.name)}</span>
+                         <span className="text-[10px] text-white/50 uppercase">{r.category.id === 'SKIP' ? 'Bonus Quitte ou Double' : (r.category.direction === 'HIGHER' ? getCategoryTranslation(r.category.id).labelHigher : getCategoryTranslation(r.category.id).labelLower)}</span>
                        </div>
-                       <span className="font-black text-accent-yellow text-xl">#{r.rank}</span>
+                       <span className="font-black text-accent-yellow text-xl">{r.category.id === 'SKIP' ? '-' : `#${r.rank}`}</span>
                      </div>
                    ))}
                  </div>

@@ -112,8 +112,17 @@ export interface CategorySpec {
   description: string;
 }
 
-export type GameState = 'HOME' | 'START' | 'PLAYING' | 'END' | 'TUTORIAL' | 'SHOP' | 'COLLECTION';
+export type GameState = 'HOME' | 'START' | 'BONUS_WHEEL' | 'PLAYING' | 'END' | 'TUTORIAL' | 'SHOP' | 'COLLECTION';
 export type GameMode = 'ENDLESS' | 'DAILY';
+
+export type BonusType = 'RELOCATION' | 'REROLL' | 'ZOMBIE' | 'CLAIRVOYANT' | 'DOUBLE_OR_NOTHING' | 'FORESHADOWING';
+
+export interface Bonus {
+  id: BonusType;
+  name: string;
+  description: string;
+  icon: string;
+}
 
 export interface Round {
   country: Country;

@@ -35,7 +35,19 @@ export function Leaderboard() {
             });
           }
         });
-        setLeaderboard(entries);
+
+        // Add artificial entries
+        entries.push(
+          { id: 'artificial_1', displayName: "Le Vigile d'Audencia", highScore: 67 },
+          { id: 'artificial_2', displayName: "m0nesy", highScore: 3 },
+          { id: 'artificial_3', displayName: "Louis Sarkozy", highScore: 0.00001 }
+        );
+
+        // Sort descending and cap at 10 to include artificial entries properly
+        entries.sort((a, b) => b.highScore - a.highScore);
+        const top10Entries = entries.slice(0, 10);
+
+        setLeaderboard(top10Entries);
       } catch (err) {
         handleFirestoreError(err, OperationType.LIST, 'users');
       } finally {
