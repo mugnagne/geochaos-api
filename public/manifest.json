@@ -8,9 +8,9 @@
   "theme_color": "#FF0080",
   "icons": [
     {
-      "src": "/logo.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "src": "https://i.postimg.cc/CdwSnf5m/favicon-geochaos.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png"
     }
   ]
 }

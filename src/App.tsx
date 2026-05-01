@@ -243,7 +243,7 @@ export default function App() {
             className="text-center z-10 w-full flex flex-col items-center justify-center min-h-[100dvh] py-4 px-2"
           >
             <motion.div 
-              className="mb-4 sm:mb-6 relative inline-block flex-shrink-0"
+              className="mb-4 sm:mb-6 relative flex flex-col items-center flex-shrink-0"
               animate={{ 
                 y: [0, -5, 0],
                 rotate: [-0.5, 0.5, -0.5]
@@ -254,8 +254,18 @@ export default function App() {
                 ease: "easeInOut" 
               }}
             >
-              <Globe className="absolute -top-4 -left-4 sm:-top-8 sm:-left-8 text-accent-cyan opacity-60 animate-wiggle" size={60} />
-              <Globe className="absolute -bottom-2 -right-2 sm:-bottom-6 sm:-right-6 text-accent-magenta opacity-40 animate-pulse delay-75" size={40} />
+              <div className="relative flex justify-center items-center -mb-2 sm:-mb-6 z-20">
+                <Globe className="absolute -top-2 -left-4 sm:-top-4 sm:-left-8 text-accent-cyan opacity-60 animate-wiggle" size={60} />
+                <Globe className="absolute -bottom-2 -right-4 sm:-bottom-4 sm:-right-8 text-accent-magenta opacity-40 animate-pulse delay-75" size={40} />
+                <img 
+                  src="https://i.postimg.cc/Z0jZ8Kvr/logo-geochaos.png" 
+                  alt="Logo GeoChaos"
+                  className="w-48 h-48 sm:w-64 sm:h-64 object-contain pointer-events-none transition-transform duration-1000 animate-pulse"
+                  style={{ 
+                    filter: "drop-shadow(0 0 15px #FF3AF2) drop-shadow(0 0 30px #00F5D4)", 
+                  }} 
+                />
+              </div>
               <h1 className="text-[12vw] sm:text-7xl md:text-8xl lg:text-[120px] font-black italic tracking-tighter text-shadow-mega leading-none text-white relative z-10 flex items-center justify-center whitespace-nowrap">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">{t('title_geo')}</span>
                 <span className="text-accent-yellow ml-1 sm:ml-2 animate-neon-flicker drop-shadow-[0_0_20px_rgba(255,230,0,0.8)]">{t('title_chaos')}</span>
