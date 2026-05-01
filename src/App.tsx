@@ -189,7 +189,7 @@ export default function App() {
   return (
     <div className="min-h-screen w-full relative p-4 md:p-8 flex flex-col items-center justify-center overflow-x-hidden selection:bg-accent-magenta selection:text-white">
       {/* Alpha Badge & Login Widget */}
-      <div className={`absolute top-4 z-50 flex items-center gap-4 transition-all duration-500 ${gameState === 'PLAYING' ? 'left-4' : 'right-4'}`}>
+      <div className={`absolute top-4 z-50 hidden sm:flex items-center gap-4 transition-all duration-500 ${gameState === 'PLAYING' ? 'left-4' : 'right-4'}`}>
         {gameState !== 'PLAYING' && <LanguageSelector />}
         
         {/* Hide login button entirely while playing */}

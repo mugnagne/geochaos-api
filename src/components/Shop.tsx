@@ -18,12 +18,15 @@ interface Props {
 
 export function Shop({ cheatMode = false, onBack }: Props) {
   const { coins, setCoins, ownedCards, addCard } = useFirebase();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   const [isPulling, setIsPulling] = useState(false);
   const [pulledCard, setPulledCard] = useState<{ country: Country, rarity: Rarity, isNew: boolean } | null>(null);
   const [isFlashing, setIsFlashing] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
+  const [promoCode, setPromoCode] = useState('');
+  const [usedCodes, setUsedCodes] = useState<string[]>([]);
+  const [promoMessage, setPromoMessage] = useState('');
   
   const triggerConfetti = (rarity: Rarity) => {
     let scalar = 1;
@@ -80,42 +83,66 @@ export function Shop({ cheatMode = false, onBack }: Props) {
       setCoins(c => c - 10);
     }
     
+    // Determine rarity based on global chances
+    const rand = Math.random() * 100;
+    let drawnRarity: Rarity = 'COMMUN';
+    
+    let accum = 0;
+    if (rand < (accum += RARITIES.GEOCHAOS.chance)) drawnRarity = 'GEOCHAOS';
+    else if (rand < (accum += RARITIES.LEGENDAIRE.chance)) drawnRarity = 'LEGENDAIRE';
+    else if (rand < (accum += RARITIES.EPIQUE.chance)) drawnRarity = 'EPIQUE';
+    else if (rand < (accum += RARITIES.RARE.chance)) drawnRarity = 'RARE';
+    else drawnRarity = 'COMMUN';
+
+    // Get all countries matching this rarity
+    const matchingCountries = COUNTRIES.filter(c => getCountryRarity(c.name) === drawnRarity);
+    
+    // Fallback if none (shouldn't happen)
+    const pool = matchingCountries.length > 0 ? matchingCountries : COUNTRIES;
+    
+    const drawnCountry = pool[Math.floor(Math.random() * pool.length)];
+    
+    const existing = ownedCards.find(c => c.countryName === drawnCountry.name);
+    const isNew = !existing;
+    
+    setPulledCard({ country: drawnCountry, rarity: drawnRarity, isNew });
     setIsPulling(true);
-    setPulledCard(null);
     
     setTimeout(() => {
-      // Determine rarity based on global chances
-      const rand = Math.random() * 100;
-      let drawnRarity: Rarity = 'COMMUN';
-      
-      let accum = 0;
-      if (rand < (accum += RARITIES.GEOCHAOS.chance)) drawnRarity = 'GEOCHAOS';
-      else if (rand < (accum += RARITIES.LEGENDAIRE.chance)) drawnRarity = 'LEGENDAIRE';
-      else if (rand < (accum += RARITIES.EPIQUE.chance)) drawnRarity = 'EPIQUE';
-      else if (rand < (accum += RARITIES.RARE.chance)) drawnRarity = 'RARE';
-      else drawnRarity = 'COMMUN';
-
-      // Get all countries matching this rarity
-      const matchingCountries = COUNTRIES.filter(c => getCountryRarity(c.name) === drawnRarity);
-      
-      // Fallback if none (shouldn't happen)
-      const pool = matchingCountries.length > 0 ? matchingCountries : COUNTRIES;
-      
-      const drawnCountry = pool[Math.floor(Math.random() * pool.length)];
-      
-      const existing = ownedCards.find(c => c.countryName === drawnCountry.name);
-      const isNew = !existing;
-      
       addCard(drawnCountry.name);
-      
-      setPulledCard({ country: drawnCountry, rarity: drawnRarity, isNew });
       triggerConfetti(drawnRarity);
       setIsPulling(false);
-    }, 2000); // 2s animation
+    }, 3200); // Wait for the new capsule animation to finish before revealing
   }, [coins, cheatMode, ownedCards, setCoins, addCard]);
 
+  const handlePromoSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const code = promoCode.trim().toUpperCase();
+    
+    const PROMO_CODES: Record<string, number> = {
+      'BNZ19420': 10,
+      'STORYPV': 100,
+      'DESOLECONSTANCE': 70
+    };
+
+    if (PROMO_CODES[code]) {
+      if (usedCodes.includes(code)) {
+        setPromoMessage(t('promo_already_used') || 'Code déjà utilisé');
+      } else {
+        const reward = PROMO_CODES[code];
+        setCoins(c => (c || 0) + reward);
+        setUsedCodes(prev => [...prev, code]);
+        setPromoMessage(`+${reward} ${language === 'fr' ? 'Pièces' : 'Coins'} !`);
+      }
+    } else {
+      setPromoMessage(t('promo_invalid') || 'Code invalide');
+    }
+    setTimeout(() => setPromoMessage(''), 3000);
+    setPromoCode('');
+  };
+
   return (
-    <div className={`flex flex-col items-center w-full max-w-4xl mx-auto py-8 px-4 ${isShaking ? 'animate-bounce' : ''}`}>
+    <div className={`flex flex-col items-center w-full max-w-4xl mx-auto py-4 px-2 sm:px-4 ${isShaking ? 'animate-bounce' : ''}`}>
       <AnimatePresence>
          {isFlashing && (
            <motion.div 
@@ -128,30 +155,26 @@ export function Shop({ cheatMode = false, onBack }: Props) {
          )}
       </AnimatePresence>
 
-      <div className="flex w-full justify-between items-center mb-8 z-10">
-         <MaxButton onClick={onBack} variant="secondary" className="px-6 h-12 uppercase text-sm">
+      <div className="flex w-full justify-between items-center mb-8 md:mb-10 z-10">
+         <MaxButton onClick={onBack} variant="secondary" className="px-4 h-10 uppercase text-xs">
            {t('btn_back')}
          </MaxButton>
-         <div className="flex items-center gap-3 bg-max-muted px-6 py-3 rounded-2xl border-4 border-accent-yellow shadow-max-yellow">
-           <Coins className="text-accent-yellow" size={24} />
-           <span className="text-2xl font-black">{cheatMode ? '∞' : coins}</span>
+         <div className="flex items-center gap-2 bg-max-muted px-4 py-2 rounded-xl border-2 border-accent-yellow shadow-[4px_4px_0px_#FFE600]">
+           <Coins className="text-accent-yellow" size={20} />
+           <span className="text-xl font-black">{cheatMode ? '∞' : coins}</span>
          </div>
       </div>
       
-      <MaxCard accent="purple" className="flex flex-col items-center w-full mb-12 text-center relative overflow-hidden z-20">
-        <h2 className="text-4xl md:text-5xl font-black text-accent-magenta uppercase mb-4 text-shadow-magenta z-10">{t('shop_title')}</h2>
-        <p className="text-xl font-bold opacity-80 mb-8 max-w-lg z-10">
-          {t('shop_subtitle')} <br/>
-          {t('shop_price')}
-        </p>
-
+      <MaxCard accent="purple" className="flex flex-col items-center w-full mb-4 py-4 px-4 text-center relative overflow-hidden z-20">
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase mb-2 animate-gradient-shift bg-gradient-to-r from-accent-yellow via-accent-magenta to-accent-cyan bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(255,58,242,0.6)] z-10">{t('shop_title')}</h2>
+        
         {cheatMode && (
-          <div className="bg-red-500/20 text-red-400 font-bold px-4 py-2 rounded-xl mb-6 flex items-center gap-2 border border-red-500/50 z-10">
-            <AlertTriangle size={18} /> {t('shop_cheat_mode')}
+          <div className="bg-red-500/20 text-red-400 font-bold px-3 py-1 rounded-lg mb-2 flex items-center gap-2 border border-red-500/50 z-10 text-sm">
+            <AlertTriangle size={16} /> {t('shop_cheat_mode')}
           </div>
         )}
 
-        <div className="relative h-96 w-full flex items-center justify-center perspective-1000 mb-8 mt-4 z-10">
+        <div className="relative h-72 sm:h-80 w-full flex items-center justify-center perspective-1000 mb-10 z-10">
           <AnimatePresence mode="wait">
             {(!pulledCard || isPulling) && (
               <motion.div
@@ -161,7 +184,7 @@ export function Shop({ cheatMode = false, onBack }: Props) {
                 exit={{ opacity: 0, scale: 0.8 }}
                 className="absolute"
               >
-                <GashaponMachine isPulling={isPulling} />
+                <GashaponMachine isPulling={isPulling} expectedRarity={isPulling ? pulledCard?.rarity : undefined} />
               </motion.div>
             )}
             
@@ -171,7 +194,7 @@ export function Shop({ cheatMode = false, onBack }: Props) {
                 initial={{ scale: 0, y: 100, rotateY: 180 }}
                 animate={{ scale: 1, y: 0, rotateY: 0 }}
                 transition={{ type: 'spring', damping: 15 }}
-                className="z-20 relative w-64 sm:w-80"
+                className="z-20 relative w-56 sm:w-64"
               >
                 {/* Glow effect matching rarity */}
                 <div className={`absolute -inset-10 rounded-full blur-3xl opacity-50 -z-10
@@ -194,11 +217,32 @@ export function Shop({ cheatMode = false, onBack }: Props) {
         <MaxButton 
           onClick={handlePull} 
           disabled={isPulling || (coins < 10 && !cheatMode)}
-          className="mt-4 text-2xl h-20 px-12 group flex items-center justify-center w-full sm:w-auto z-10"
+          className="mt-6 text-xl sm:text-2xl h-14 sm:h-16 px-8 group flex items-center justify-center w-full z-10"
         >
           {isPulling ? t('shop_pulling') : pulledCard ? t('shop_pull_again') : t('shop_pull_btn')}
         </MaxButton>
       </MaxCard>
+
+      {/* Promo Code Section */}
+      <div className="mt-8 flex flex-col items-center z-10 w-full max-w-sm">
+        <form onSubmit={handlePromoSubmit} className="flex w-full gap-2">
+          <input 
+            type="text" 
+            value={promoCode}
+            onChange={(e) => setPromoCode(e.target.value)}
+            placeholder={t('promo_placeholder') || 'Promo code'}
+            className="flex-1 bg-max-bg border-4 border-white/20 rounded-xl px-4 py-2 font-black uppercase placeholder:text-white/30 focus:outline-none focus:border-accent-cyan transition-colors"
+          />
+          <MaxButton type="submit" variant="secondary" className="px-6 border-white/20 hover:border-accent-cyan">
+            {t('promo_btn') || 'OK'}
+          </MaxButton>
+        </form>
+        <div className="h-6 mt-2">
+          {promoMessage && (
+            <p className="text-sm font-black text-accent-yellow animate-pulse uppercase tracking-wider">{promoMessage}</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
