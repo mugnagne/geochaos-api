@@ -125,7 +125,16 @@ export function Shop({ cheatMode = false, onBack }: Props) {
       'DESOLECONSTANCE': 70
     };
 
-    if (PROMO_CODES[code]) {
+    if (code === 'MONDEINVERSE?ETPUISQUOIENCORE') {
+      if (usedCodes.includes(code)) {
+        setPromoMessage(t('promo_already_used') || 'Code déjà utilisé');
+      } else {
+        setCoins(c => (c || 0) + 1);
+        addCard("Bataillon d'exploration");
+        setUsedCodes(prev => [...prev, code]);
+        setPromoMessage(`Bataillon d'exploration débloqué + 1 ${language === 'fr' ? 'Pièce' : 'Coin'} !`);
+      }
+    } else if (PROMO_CODES[code]) {
       if (usedCodes.includes(code)) {
         setPromoMessage(t('promo_already_used') || 'Code déjà utilisé');
       } else {

@@ -125,5 +125,30 @@ export const SPECIAL_COUNTRIES: Country[] = [
     fruitProduction: 10,
     childLabour: 0,
     roadTrafficDeaths: 1
+  },
+  {
+    name: "Bataillon d'exploration",
+    abbreviation: "BDE",
+    flagUrl: "https://external-preview.redd.it/the-flag-of-the-survey-corps-from-the-manga-shingeki-no-v0-0SWHjPPF-f4SDxWtEIOA_1nYH1NGNmnmIXTAONXgy3s.jpg?auto=webp&s=af84c4951cad1ba0e09289d6ddb392af60ad1e05",
+    capital: "Paradis",
+    population: 300,
+    latitude: 0.0,
+    longitude: 0.0,
+    annualPrecipitation: 500,
+    averageTemp: 15.0,
+    alcoholConsumption: 30.0,
+    riceProduction: 0,
+    highestPoint: 50,
+    coffeeProduction: 0,
+    corruptionIndex: 50,
+    democracyScore: 5.0,
+    homicideRate: 99.0,
+    obesityRate: 0,
+    over65Rate: 0,
+    under15Rate: 5,
+    populationGrowthRate: -50.0,
+    fruitProduction: 0,
+    childLabour: 30,
+    roadTrafficDeaths: 0
   }
 ];

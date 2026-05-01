@@ -9,7 +9,7 @@ export const RARITIES: Record<Rarity, { label: string; chance: number; color: st
 };
 
 export const GEOCHAOS_COUNTRIES = [
-  "Bretagne", "URSS", "Commune de Paris", "Nilfgaard", "AudenciaLand"
+  "Bretagne", "URSS", "Commune de Paris", "Nilfgaard", "AudenciaLand", "Bataillon d'exploration"
 ];
 
 // Determine rarity based on some simple string hashing to keep it deterministic per country
