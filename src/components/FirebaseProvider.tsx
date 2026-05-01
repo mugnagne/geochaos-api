@@ -70,6 +70,7 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
               await setDoc(userRef, {
                 coins: localCoins,
                 highScore: localHighScore || 0,
+                displayName: currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : 'Anonyme'),
                 createdAt: serverTimestamp(),
                 updatedAt: serverTimestamp()
               });
@@ -81,6 +82,11 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
                   obtainedAt: card.obtainedAt,
                   count: card.count
                 });
+              }
+            } else {
+              const currentName = currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : 'Anonyme');
+              if (userSnap.data().displayName !== currentName) {
+                await updateDoc(userRef, { displayName: currentName, updatedAt: serverTimestamp() });
               }
             }
           } catch (e) {

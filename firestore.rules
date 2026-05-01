@@ -14,12 +14,13 @@ service cloud.firestore {
     function existing() { return resource.data; }
 
     function isValidUser(data) {
-      return data.keys().hasAll(['coins', 'highScore', 'createdAt', 'updatedAt']) 
-        && data.keys().size() == 4
+      return data.keys().hasAll(['coins', 'highScore', 'createdAt', 'updatedAt', 'displayName']) 
+        && data.keys().size() <= 5
         && data.coins is number
         && data.highScore is number
         && data.createdAt is timestamp
-        && data.updatedAt is timestamp;
+        && data.updatedAt is timestamp
+        && data.get('displayName', '') is string;
     }
 
     function isValidUserCard(data) {
@@ -33,7 +34,7 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow get: if isSignedIn() && request.auth.uid == userId && isValidId(userId);
-      allow list: if false; // Users cannot list other users
+      allow list: if isSignedIn(); // Allow listing users for leaderboard
       
       allow create: if isSignedIn() 
         && request.auth.uid == userId 
@@ -47,7 +48,7 @@ service cloud.firestore {
       allow update: if isSignedIn()
         && request.auth.uid == userId
         && isValidId(userId)
-        && incoming().diff(existing()).affectedKeys().hasOnly(['coins', 'highScore', 'updatedAt'])
+        && incoming().diff(existing()).affectedKeys().hasOnly(['coins', 'highScore', 'updatedAt', 'displayName'])
         && incoming().updatedAt == request.time
         && incoming().coins is number
         && incoming().coins >= 0

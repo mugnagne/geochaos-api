@@ -15,6 +15,7 @@ import { Collection } from './components/Collection';
 import { useFirebase } from './components/FirebaseProvider';
 import { useTranslation } from './components/TranslationProvider';
 import { LanguageSelector } from './components/LanguageSelector';
+import { Leaderboard } from './components/Leaderboard';
 
 const getFrenchName = (abbreviation: string | undefined, fallback: string) => {
   try {
@@ -188,44 +189,42 @@ export default function App() {
 
   return (
     <div className="min-h-screen w-full relative p-4 md:p-8 flex flex-col items-center justify-center overflow-x-hidden selection:bg-accent-magenta selection:text-white">
-      {/* Alpha Badge & Login Widget */}
-      <div className={`absolute top-4 z-50 hidden sm:flex items-center gap-4 transition-all duration-500 ${gameState === 'PLAYING' ? 'left-4' : 'right-4'}`}>
-        {gameState !== 'PLAYING' && <LanguageSelector />}
-        
-        {/* Hide login button entirely while playing */}
-        <div className={gameState === 'PLAYING' ? 'hidden' : 'block'}>
-          {user ? (
-            <div className="flex items-center gap-2 bg-max-muted px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border-2 border-white/20 shadow-lg backdrop-blur-sm group relative">
-              {/* Connection Status Tooltip/Indicator */}
-              <div className="flex items-center gap-1.5 pr-1 mr-1 border-r border-white/10">
-                <div className={`w-2 h-2 rounded-full ${
-                  connectionStatus === 'online' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 
-                  connectionStatus === 'offline' ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)] animate-pulse' : 
-                  'bg-yellow-500 animate-pulse'
-                }`} />
-                <div className="absolute top-full left-0 mt-2 bg-max-bg border border-white/20 p-2 rounded-lg text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[60]">
-                  {connectionStatus === 'online' ? t('sync_online') : 
-                   connectionStatus === 'offline' ? t('sync_offline') : 
-                   t('sync_checking')}
+      {/* Alpha Badge & Login Widget - Only visible in HOME state */}
+      {gameState === 'HOME' && (
+        <>
+          <div className="absolute top-4 left-4 z-50 flex flex-wrap items-center gap-2 sm:gap-4 transition-all duration-500">
+            <LanguageSelector />
+            <div className="block">
+              {user ? (
+                <div className="flex items-center gap-2 bg-max-muted px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border-2 border-white/20 shadow-lg backdrop-blur-sm group relative">
+                  <div className="flex items-center gap-1.5 pr-1 mr-1 border-r border-white/10">
+                    <div className={`w-2 h-2 rounded-full ${
+                      connectionStatus === 'online' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 
+                      connectionStatus === 'offline' ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)] animate-pulse' : 
+                      'bg-yellow-500 animate-pulse'
+                    }`} />
+                    <div className="absolute top-full left-0 mt-2 bg-max-bg border border-white/20 p-2 rounded-lg text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[60]">
+                      {connectionStatus === 'online' ? t('sync_online') : 
+                       connectionStatus === 'offline' ? t('sync_offline') : 
+                       t('sync_checking')}
+                    </div>
+                  </div>
+
+                  <span className="text-xs sm:text-sm font-bold text-white/80 max-w-[70px] sm:max-w-[150px] truncate">{user.displayName || user.email}</span>
+                  <button onClick={logout} className="text-[10px] sm:text-xs bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white px-2 py-0.5 sm:py-1 rounded font-bold uppercase transition-colors shrink-0">{t('logout')}</button>
                 </div>
-              </div>
-
-              <span className="text-xs sm:text-sm font-bold text-white/80 max-w-[70px] sm:max-w-[150px] truncate">{user.displayName || user.email}</span>
-              <button onClick={logout} className="text-[10px] sm:text-xs bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white px-2 py-0.5 sm:py-1 rounded font-bold uppercase transition-colors shrink-0">{t('logout')}</button>
+              ) : (
+                <button onClick={login} className="text-[10px] sm:text-sm font-black uppercase tracking-wider bg-accent-cyan text-max-bg border-2 border-accent-cyan hover:bg-transparent hover:text-accent-cyan px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl transition-colors shadow-max-cyan shrink-0">
+                  {t('login')}
+                </button>
+              )}
             </div>
-          ) : (
-            <button onClick={login} className="text-[10px] sm:text-sm font-black uppercase tracking-wider bg-accent-cyan text-max-bg border-2 border-accent-cyan hover:bg-transparent hover:text-accent-cyan px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl transition-colors shadow-max-cyan shrink-0">
-              {t('login')}
-            </button>
-          )}
-        </div>
-
-        {gameState !== 'PLAYING' && (
-          <div className="bg-accent-magenta text-white text-xs sm:text-sm font-black px-4 py-2 rounded-xl shadow-max-magenta transform rotate-12 pointer-events-none uppercase border-2 border-white/20 shrink-0 hidden sm:block">
+          </div>
+          <div className="absolute top-4 right-4 z-50 bg-accent-magenta text-white text-xs sm:text-sm font-black px-4 py-2 rounded-xl shadow-max-magenta transform rotate-12 pointer-events-none uppercase border-2 border-white/20 hidden sm:block">
             {t('alpha')}
           </div>
-        )}
-      </div>
+        </>
+      )}
 
       <FloatingShape type="star" color="#FF3AF2" size="w-24 h-24" top="10%" left="5%" delay={0} />
       <FloatingShape type="circle" color="#00F5D4" size="w-16 h-16" top="20%" left="85%" delay={1} />
@@ -302,13 +301,15 @@ export default function App() {
               </MaxButton>
             </div>
             
-            <div className="mt-4 sm:mt-6 w-full max-w-sm mx-auto">
+            <div className="mt-4 sm:mt-6 w-full max-w-sm mx-auto flex flex-col gap-4">
               <button 
                 onClick={() => setGameState('TUTORIAL')} 
                 className="w-full flex items-center justify-center py-2 text-white/50 hover:text-white transition-colors text-xs sm:text-sm font-bold uppercase tracking-wider"
               >
                 <BookOpen className="mr-2 w-4 h-4" /> {t('btn_tutorial')}
               </button>
+
+              <Leaderboard />
             </div>
           </motion.div>
         )}
