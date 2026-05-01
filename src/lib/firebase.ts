@@ -2,7 +2,8 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { initializeFirestore, doc, getDocFromServer } from 'firebase/firestore';
 
-import firebaseConfig from '../../firebase-applet-config.json';
+const configModules = import.meta.glob('../../firebase-applet-config.json', { eager: true }) as Record<string, { default: any }>;
+const firebaseConfig = configModules['../../firebase-applet-config.json']?.default || {};
 
 const envConfig = {
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || firebaseConfig.projectId,
