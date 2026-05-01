@@ -192,8 +192,8 @@ export default function App() {
       <div className={`absolute top-4 z-50 flex items-center gap-4 transition-all duration-500 ${gameState === 'PLAYING' ? 'left-4' : 'right-4'}`}>
         {gameState !== 'PLAYING' && <LanguageSelector />}
         
-        {/* Only show login button outside of the game on mobile, or always on desktop */}
-        <div className={gameState === 'PLAYING' ? 'hidden sm:block' : 'block'}>
+        {/* Hide login button entirely while playing */}
+        <div className={gameState === 'PLAYING' ? 'hidden' : 'block'}>
           {user ? (
             <div className="flex items-center gap-2 bg-max-muted px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border-2 border-white/20 shadow-lg backdrop-blur-sm group relative">
               {/* Connection Status Tooltip/Indicator */}
@@ -255,20 +255,18 @@ export default function App() {
               }}
             >
               <div className="relative flex justify-center items-center -mb-2 sm:-mb-6 z-20">
-                <Globe className="absolute -top-2 -left-4 sm:-top-4 sm:-left-8 text-accent-cyan opacity-60 animate-wiggle" size={60} />
-                <Globe className="absolute -bottom-2 -right-4 sm:-bottom-4 sm:-right-8 text-accent-magenta opacity-40 animate-pulse delay-75" size={40} />
                 <img 
                   src="https://i.postimg.cc/Z0jZ8Kvr/logo-geochaos.png" 
                   alt="Logo GeoChaos"
-                  className="w-48 h-48 sm:w-64 sm:h-64 object-contain pointer-events-none transition-transform duration-1000 animate-pulse"
+                  className="w-48 h-48 sm:w-64 sm:h-64 object-contain pointer-events-none transition-transform duration-1000 animate-blink"
                   style={{ 
-                    filter: "drop-shadow(0 0 15px #FF3AF2) drop-shadow(0 0 30px #00F5D4)", 
+                    filter: "drop-shadow(0 0 15px #00F5D4) drop-shadow(0 0 30px #00F5D4)", 
                   }} 
                 />
               </div>
               <h1 className="text-[12vw] sm:text-7xl md:text-8xl lg:text-[120px] font-black italic tracking-tighter text-shadow-mega leading-none text-white relative z-10 flex items-center justify-center whitespace-nowrap">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">{t('title_geo')}</span>
-                <span className="text-accent-yellow ml-1 sm:ml-2 animate-neon-flicker drop-shadow-[0_0_20px_rgba(255,230,0,0.8)]">{t('title_chaos')}</span>
+                <span className="text-accent-yellow ml-1 sm:ml-2">{t('title_chaos')}</span>
               </h1>
             </motion.div>
 
@@ -408,6 +406,14 @@ export default function App() {
                 </AnimatePresence>
               </div>
             </div>
+
+            {gameMode === 'DAILY' && (
+              <div className="lg:col-span-12 bg-accent-yellow/20 border-2 border-accent-yellow p-3 rounded-xl text-center shadow-max-yellow animate-pulse">
+                <p className="text-accent-yellow font-black uppercase text-sm sm:text-base">
+                  {t('daily_mode_desc')}
+                </p>
+              </div>
+            )}
 
             <div className="lg:col-span-12">
               <AnimatePresence mode="wait">
@@ -716,9 +722,8 @@ export default function App() {
             <p>{t('subtitle')}</p>
           </div>
           <div className="flex gap-6 uppercase tracking-tighter">
-            <span className="hover:text-accent-cyan cursor-default transition-colors">© 2024 GEOCHAOS</span>
+            <span className="hover:text-accent-cyan cursor-default transition-colors">© 2026 GEOCHAOS</span>
             <span className="hover:text-accent-magenta cursor-default transition-colors">Open Data Géo</span>
-            <span className="hover:text-accent-yellow cursor-default transition-colors">Privacy & Fairness</span>
           </div>
         </div>
       </footer>
