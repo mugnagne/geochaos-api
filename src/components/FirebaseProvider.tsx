@@ -9,7 +9,7 @@ interface FirebaseContextType {
   loading: boolean;
   connectionStatus: 'online' | 'offline' | 'checking';
   coins: number;
-  setCoins: (coins: number) => void;
+  setCoins: (coins: number | ((prev: number) => number)) => void;
   highScore: number | null;
   setHighScore: (score: number) => void;
   ownedCards: OwnedCard[];
@@ -140,18 +140,21 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
     };
   }, [localCoins, localHighScore, localOwnedCards]);
 
-  const updateCoins = async (newCoins: number) => {
+  const updateCoins = async (newCoins: number | ((prev: number) => number)) => {
+    // Calculate the actual value to set
+    const valueToSet = typeof newCoins === 'function' ? newCoins(user ? coins : localCoins) : newCoins;
+
     if (user) {
-      setCoins(newCoins);
+      setCoins(valueToSet);
       const userRef = doc(db, 'users', user.uid);
       try {
-        await updateDoc(userRef, { coins: newCoins, updatedAt: serverTimestamp() });
+        await updateDoc(userRef, { coins: valueToSet, updatedAt: serverTimestamp() });
       } catch (e) {
         handleFirestoreError(e, OperationType.UPDATE, 'users');
       }
     } else {
-      setLocalCoins(newCoins);
-      localStorage.setItem('geochaos_coins', newCoins.toString());
+      setLocalCoins(valueToSet);
+      localStorage.setItem('geochaos_coins', valueToSet.toString());
     }
   };
 
