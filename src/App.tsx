@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Globe, Trophy, RefreshCcw, ArrowRight, Star, Zap, Target, BookOpen, ShoppingBag, List, Crown } from 'lucide-react';
 import { COUNTRIES } from './data/countries';
@@ -97,6 +97,19 @@ export default function App() {
   const [doubleNextRound, setDoubleNextRound] = useState<boolean>(false);
   const [nextCountry, setNextCountry] = useState<Country | null>(null);
 
+  const timeoutRefs = useRef<NodeJS.Timeout[]>([]);
+
+  const handleQuitGame = useCallback(() => {
+    timeoutRefs.current.forEach(clearTimeout);
+    timeoutRefs.current = [];
+    setGameState('HOME');
+  }, []);
+
+  const clearAllTimeouts = useCallback(() => {
+    timeoutRefs.current.forEach(clearTimeout);
+    timeoutRefs.current = [];
+  }, []);
+
   const totalRanks = useMemo(() => rounds.reduce((acc, r) => acc + r.rank, 0), [rounds]);
   const currentScore = 200 - totalRanks;
   const isWinner = rounds.length === 6 && currentScore >= 0;
@@ -116,26 +129,44 @@ export default function App() {
   }, []);
 
   const startNewGame = useCallback((mode: GameMode) => {
+    clearAllTimeouts();
     setGameMode(mode);
+    setCalculatedRound(null);
+    setPointLoss(null);
+    setRevealStatus('REVEALED');
+    
     let catsToUse: GameCategory[] = [];
     let firstCountry: Country;
+    let fallbackRng = () => Math.random();
 
     const gameCountries = COUNTRIES.filter(c => getCountryRarity(c.name) !== 'GEOCHAOS');
 
     if (mode === 'DAILY') {
       const seed = getDailySeed();
       const rng = mulberry32(seed);
+      fallbackRng = rng;
 
-      const shuffledCategories = [...CATEGORIES].sort(() => rng() - 0.5).slice(0, 6);
-      catsToUse = shuffledCategories.map(cat => ({
+      // Unbiased shuffle for categories
+      const shuffledCategories = [...CATEGORIES];
+      for (let i = shuffledCategories.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1));
+        [shuffledCategories[i], shuffledCategories[j]] = [shuffledCategories[j], shuffledCategories[i]];
+      }
+      
+      catsToUse = shuffledCategories.slice(0, 6).map(cat => ({
         ...cat,
         direction: rng() > 0.5 ? 'HIGHER' : 'LOWER'
       }));
 
-      firstCountry = gameCountries[Math.floor(Math.random() * gameCountries.length)];
+      firstCountry = gameCountries[Math.floor(rng() * gameCountries.length)];
     } else {
-      const shuffledCategories = [...CATEGORIES].sort(() => Math.random() - 0.5).slice(0, 6);
-      catsToUse = shuffledCategories.map(cat => ({
+      const shuffledCategories = [...CATEGORIES];
+      for (let i = shuffledCategories.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledCategories[i], shuffledCategories[j]] = [shuffledCategories[j], shuffledCategories[i]];
+      }
+
+      catsToUse = shuffledCategories.slice(0, 6).map(cat => ({
         ...cat,
         direction: Math.random() > 0.5 ? 'HIGHER' : 'LOWER'
       }));
@@ -145,18 +176,18 @@ export default function App() {
     setAvailableCategories(catsToUse);
     setRounds([]);
     setCurrentCountry(firstCountry);
-    setNextCountry(gameCountries[Math.floor(Math.random() * gameCountries.length)]);
+    setNextCountry(gameCountries[Math.floor(fallbackRng() * gameCountries.length)]);
     setActiveBonus(null);
     setBonusUsed(false);
     setDoubleNextRound(false);
     setGameState('BONUS_WHEEL');
-  }, []);
+  }, [clearAllTimeouts]);
 
   const handleBonusSelected = (bonus: Bonus) => {
     setActiveBonus(bonus);
     setGameState('PLAYING');
     setRevealStatus('SHUFFLING');
-    setTimeout(() => setRevealStatus('REVEALED'), 1500);
+    timeoutRefs.current.push(setTimeout(() => setRevealStatus('REVEALED'), 1500));
   };
 
   const handleRevealComplete = () => {
@@ -179,10 +210,10 @@ export default function App() {
       
       setRevealStatus('SHUFFLING');
       setShowInfo(false);
-      setTimeout(() => {
+      timeoutRefs.current.push(setTimeout(() => {
         setCurrentCountry(newCountry);
-      }, 750);
-      setTimeout(() => setRevealStatus('REVEALED'), 1500);
+      }, 750));
+      timeoutRefs.current.push(setTimeout(() => setRevealStatus('REVEALED'), 1500));
 
       setBonusUsed(true);
     } else if (activeBonus.id === 'REROLL') {
@@ -230,7 +261,7 @@ export default function App() {
       
       if (newRounds.length === 6) {
         setRevealStatus('ENDING');
-        setTimeout(() => {
+        timeoutRefs.current.push(setTimeout(() => {
           setGameState('END');
           const finalScore = 200 - newRounds.reduce((acc, r) => acc + r.rank, 0);
           if (finalScore >= 0) {
@@ -239,20 +270,23 @@ export default function App() {
           } else {
             setCoins(c => (c||0) + 5);
           }
-        }, 1000);
+        }, 1000));
       } else {
         const gameCountries = COUNTRIES.filter(c => getCountryRarity(c.name) !== 'GEOCHAOS');
         const usedCountryNames = newRounds.map(r => r.country.name);
-        const availableCountries = gameCountries.filter(c => !usedCountryNames.includes(c.name));
+        let availableCountries = gameCountries.filter(c => !usedCountryNames.includes(c.name));
+        if (gameMode === 'DAILY') {
+          // Keep it consistent for daily mode but since this is bonus we can use Math.random because it depends on user actions
+        }
         const _nextCountry = availableCountries[Math.floor(Math.random() * availableCountries.length)] || gameCountries[0];
         setNextCountry(_nextCountry);
         
         setRevealStatus('SHUFFLING');
         setShowInfo(false);
-        setTimeout(() => {
+        timeoutRefs.current.push(setTimeout(() => {
           setCurrentCountry(nextCountry || _nextCountry);
-        }, 750);
-        setTimeout(() => setRevealStatus('REVEALED'), 1500);
+        }, 750));
+        timeoutRefs.current.push(setTimeout(() => setRevealStatus('REVEALED'), 1500));
       }
 
     } else if (activeBonus.id === 'FORESHADOWING') {
@@ -289,7 +323,7 @@ export default function App() {
     }
 
     // Durée de l'animation de calcul : 1.5s
-    setTimeout(() => {
+    timeoutRefs.current.push(setTimeout(() => {
       setRevealStatus('RESULT');
       setPointLoss(rank);
 
@@ -300,7 +334,7 @@ export default function App() {
       const newRounds = [...rounds, { country: currentCountry, category, rank, value }];
       
       // Temps pour regarder le pop-up de score final (1.5s)
-      setTimeout(() => {
+      timeoutRefs.current.push(setTimeout(() => {
         setPointLoss(null);
         setCalculatedRound(null);
         setRounds(newRounds);
@@ -311,7 +345,7 @@ export default function App() {
             setActiveBonus(null);
             setBonusUsed(false);
           }
-          setTimeout(() => {
+          timeoutRefs.current.push(setTimeout(() => {
             setGameState('END');
             const finalScore = 200 - newRounds.reduce((acc, r) => acc + r.rank, 0);
             if (finalScore >= 0) {
@@ -320,12 +354,20 @@ export default function App() {
             } else {
               setCoins(c => (c||0) + 5);
             }
-          }, 1000);
+          }, 1000));
         } else {
           const gameCountries = COUNTRIES.filter(c => getCountryRarity(c.name) !== 'GEOCHAOS');
           const usedCountryNames = newRounds.map(r => r.country.name);
           const availableCountries = gameCountries.filter(c => !usedCountryNames.includes(c.name));
-          const _nextCountry = availableCountries[Math.floor(Math.random() * availableCountries.length)] || gameCountries[0];
+          
+          let _nextCountry = gameCountries[0];
+          if (gameMode === 'DAILY') {
+            const seed = getDailySeed();
+            const rng = mulberry32(seed + newRounds.length); // Use round length to guarantee consistent selection
+            _nextCountry = availableCountries[Math.floor(rng() * availableCountries.length)] || gameCountries[0];
+          } else {
+            _nextCountry = availableCountries[Math.floor(Math.random() * availableCountries.length)] || gameCountries[0];
+          }
           
           setNextCountry(_nextCountry);
           setRevealStatus('SHUFFLING');
@@ -334,13 +376,13 @@ export default function App() {
             setActiveBonus(null);
             setBonusUsed(false);
           }
-          setTimeout(() => {
+          timeoutRefs.current.push(setTimeout(() => {
             setCurrentCountry(nextCountry || _nextCountry);
-          }, 750);
-          setTimeout(() => setRevealStatus('REVEALED'), 1500);
+          }, 750));
+          timeoutRefs.current.push(setTimeout(() => setRevealStatus('REVEALED'), 1500));
         }
-      }, 1500);
-    }, 1500);
+      }, 1500));
+    }, 1500));
   }, [currentCountry, rounds, revealStatus, gameMode, highScore, doubleNextRound, nextCountry]);
 
   return (
@@ -554,7 +596,7 @@ export default function App() {
           >
             <div className="lg:col-span-12 flex flex-row flex-wrap items-center justify-between gap-3 sm:gap-6 mb-4 w-full">
               <button 
-                onClick={() => setGameState('HOME')} 
+                onClick={handleQuitGame} 
                 className="flex items-center justify-center bg-max-bg p-2 sm:p-4 rounded-xl border-2 sm:border-4 border-accent-magenta shadow-max-magenta hover:bg-accent-magenta/20 transition-all shrink-0 z-10"
                 title={t('quit_game')}
               >
@@ -947,7 +989,7 @@ export default function App() {
                  <MaxButton onClick={() => startNewGame(gameMode)} className="h-24 text-3xl">
                    {t('play_again')} <RefreshCcw className="ml-4" />
                  </MaxButton>
-                 <MaxButton variant="outline" onClick={() => setGameState('HOME')} className="h-16 text-xl">
+                 <MaxButton variant="outline" onClick={handleQuitGame} className="h-16 text-xl">
                    {t('main_menu')}
                  </MaxButton>
                </div>
