@@ -121,7 +121,8 @@ export function Shop({ cheatMode = false, onBack }: Props) {
     const PROMO_CODES: Record<string, number> = {
       'BNZ19420': 10,
       'STORYPV': 100,
-      'DESOLECONSTANCE': 70
+      'DESOLECONSTANCE': 70,
+      'GEOZONE': 100
     };
 
     if (code === 'MONDEINVERSE?ETPUISQUOIENCORE') {
