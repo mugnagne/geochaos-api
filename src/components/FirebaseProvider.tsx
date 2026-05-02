@@ -6,6 +6,8 @@ import { OwnedCard } from '../types';
 
 interface FirebaseContextType {
   user: User | null;
+  customDisplayName: string | null;
+  photoURL: string | null;
   loading: boolean;
   connectionStatus: 'online' | 'offline' | 'checking';
   coins: number;
@@ -16,6 +18,10 @@ interface FirebaseContextType {
   addCard: (countryName: string) => void;
   login: () => Promise<void>;
   logout: () => Promise<void>;
+  updateDisplayName: (name: string) => Promise<void>;
+  updatePhotoURL: (url: string) => Promise<void>;
+  usedPromoCodes: string[];
+  addPromoCode: (code: string) => Promise<void>;
 }
 
 const FirebaseContext = createContext<FirebaseContextType | null>(null);
@@ -33,6 +39,9 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
   const [coins, setCoins] = useState<number>(0);
   const [highScore, setHighScore] = useState<number | null>(null);
   const [ownedCards, setOwnedCards] = useState<OwnedCard[]>([]);
+  const [usedPromoCodes, setUsedPromoCodes] = useState<string[]>([]);
+  const [customDisplayName, setCustomDisplayName] = useState<string | null>(null);
+  const [photoURL, setPhotoURL] = useState<string | null>(null);
 
   // Local state fallback when not logged in
   const [localCoins, setLocalCoins] = useState(() => parseInt(localStorage.getItem('geochaos_coins') || '0'));
@@ -42,6 +51,10 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
   });
   const [localOwnedCards, setLocalOwnedCards] = useState<OwnedCard[]>(() => {
     const saved = localStorage.getItem('geochaos_cards');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [localUsedPromoCodes, setLocalUsedPromoCodes] = useState<string[]>(() => {
+    const saved = localStorage.getItem('geochaos_promocodes');
     return saved ? JSON.parse(saved) : [];
   });
 
@@ -70,6 +83,7 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
               await setDoc(userRef, {
                 coins: localCoins,
                 highScore: localHighScore || 0,
+                usedPromoCodes: localUsedPromoCodes || [],
                 displayName: currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : 'Anonyme'),
                 createdAt: serverTimestamp(),
                 updatedAt: serverTimestamp()
@@ -83,24 +97,24 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
                   count: card.count
                 });
               }
-            } else {
-              const currentName = currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : 'Anonyme');
-              if (userSnap.data().displayName !== currentName) {
-                await updateDoc(userRef, { displayName: currentName, updatedAt: serverTimestamp() });
-              }
-            }
-          } catch (e) {
-            handleFirestoreError(e, OperationType.GET, 'users/init');
-          }
-        })();
+    } else {
+      // Allow custom displayName to persist, don't reset it
+    }
+  } catch (e) {
+    handleFirestoreError(e, OperationType.GET, 'users/init');
+  }
+})();
 
-        // Subscriptions
-        unsubsUser = onSnapshot(userRef, { includeMetadataChanges: true }, (docSnap) => {
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            setCoins(data.coins);
-            setHighScore(data.highScore > 0 ? data.highScore : null);
-          }
+// Subscriptions
+unsubsUser = onSnapshot(userRef, { includeMetadataChanges: true }, (docSnap) => {
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    setCoins(data.coins);
+    setHighScore(data.highScore > 0 ? data.highScore : null);
+    setUsedPromoCodes(data.usedPromoCodes || []);
+    setCustomDisplayName(data.displayName || null);
+    setPhotoURL(data.photoURL || null);
+  }
           
           if (!docSnap.metadata.fromCache) {
             setConnectionStatus('online');
@@ -183,6 +197,50 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const addPromoCode = async (code: string) => {
+    if (user) {
+      setUsedPromoCodes(prev => [...prev, code]);
+      const userRef = doc(db, 'users', user.uid);
+      try {
+        const snap = await getDoc(userRef);
+        const existing = snap.exists() ? (snap.data().usedPromoCodes || []) : [];
+        if (!existing.includes(code)) {
+          await updateDoc(userRef, { usedPromoCodes: [...existing, code], updatedAt: serverTimestamp() });
+        }
+      } catch (e) {
+        handleFirestoreError(e, OperationType.UPDATE, 'users');
+      }
+    } else {
+      setLocalUsedPromoCodes(prev => {
+        const newArr = [...prev, code];
+        localStorage.setItem('geochaos_promocodes', JSON.stringify(newArr));
+        return newArr;
+      });
+    }
+  };
+
+  const updateDisplayName = async (name: string) => {
+    if (user) {
+      const userRef = doc(db, 'users', user.uid);
+      try {
+        await updateDoc(userRef, { displayName: name, updatedAt: serverTimestamp() });
+      } catch (e) {
+        handleFirestoreError(e, OperationType.UPDATE, 'users');
+      }
+    }
+  };
+
+  const updatePhotoURL = async (url: string) => {
+    if (user) {
+      const userRef = doc(db, 'users', user.uid);
+      try {
+        await updateDoc(userRef, { photoURL: url, updatedAt: serverTimestamp() });
+      } catch (e) {
+        handleFirestoreError(e, OperationType.UPDATE, 'users');
+      }
+    }
+  };
+
   const addCard = async (countryName: string) => {
     if (user) {
       const safeId = countryName.replace(/[^a-zA-Z0-9_-]/g, '_');
@@ -216,6 +274,8 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
   return (
     <FirebaseContext.Provider value={{
       user,
+      customDisplayName,
+      photoURL,
       loading,
       connectionStatus,
       coins: user ? coins : localCoins,
@@ -224,6 +284,10 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
       setHighScore: updateHighScore,
       ownedCards: user ? ownedCards : localOwnedCards,
       addCard,
+      usedPromoCodes: user ? usedPromoCodes : localUsedPromoCodes,
+      addPromoCode,
+      updateDisplayName,
+      updatePhotoURL,
       login: loginWithGoogle,
       logout
     }}>

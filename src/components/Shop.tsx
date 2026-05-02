@@ -17,7 +17,7 @@ interface Props {
 }
 
 export function Shop({ cheatMode = false, onBack }: Props) {
-  const { coins, setCoins, ownedCards, addCard } = useFirebase();
+  const { coins, setCoins, ownedCards, addCard, usedPromoCodes, addPromoCode } = useFirebase();
   const { t, language } = useTranslation();
 
   const [isPulling, setIsPulling] = useState(false);
@@ -25,7 +25,6 @@ export function Shop({ cheatMode = false, onBack }: Props) {
   const [isFlashing, setIsFlashing] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
   const [promoCode, setPromoCode] = useState('');
-  const [usedCodes, setUsedCodes] = useState<string[]>([]);
   const [promoMessage, setPromoMessage] = useState('');
   
   const triggerConfetti = (rarity: Rarity) => {
@@ -126,21 +125,21 @@ export function Shop({ cheatMode = false, onBack }: Props) {
     };
 
     if (code === 'MONDEINVERSE?ETPUISQUOIENCORE') {
-      if (usedCodes.includes(code)) {
+      if (usedPromoCodes.includes(code)) {
         setPromoMessage(t('promo_already_used') || 'Code déjà utilisé');
       } else {
         setCoins(c => (c || 0) + 1);
         addCard("Bataillon d'exploration");
-        setUsedCodes(prev => [...prev, code]);
+        addPromoCode(code);
         setPromoMessage(`Bataillon d'exploration débloqué + 1 ${language === 'fr' ? 'Pièce' : 'Coin'} !`);
       }
     } else if (PROMO_CODES[code]) {
-      if (usedCodes.includes(code)) {
+      if (usedPromoCodes.includes(code)) {
         setPromoMessage(t('promo_already_used') || 'Code déjà utilisé');
       } else {
         const reward = PROMO_CODES[code];
         setCoins(c => (c || 0) + reward);
-        setUsedCodes(prev => [...prev, code]);
+        addPromoCode(code);
         setPromoMessage(`+${reward} ${language === 'fr' ? 'Pièces' : 'Coins'} !`);
       }
     } else {

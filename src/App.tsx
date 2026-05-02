@@ -8,7 +8,7 @@ import { Country, CategorySpec, GameCategory, GameState, GameMode, Round, OwnedC
 import { MaxButton, MaxCard, FloatingShape } from './components/MaximalistComponents';
 import { calculateRank } from './lib/gameUtils';
 import { FlagShuffle } from './components/FlagShuffle';
-import { Info, MapPin, Languages, Coins, Landmark, HelpCircle, XCircle, X } from 'lucide-react';
+import { Info, MapPin, Languages, Coins, Landmark, HelpCircle, XCircle, X, Settings, User } from 'lucide-react';
 import { getDailySeed, mulberry32 } from './lib/dailySeed';
 import { Shop } from './components/Shop';
 import { Collection } from './components/Collection';
@@ -63,7 +63,17 @@ function AnimatedRank({ targetRank }: { targetRank: number }) {
 }
 
 export default function App() {
-  const { user, login, logout, coins, setCoins, highScore, setHighScore, ownedCards, loading, connectionStatus } = useFirebase();
+  const { user, customDisplayName, photoURL, updatePhotoURL, login, logout, coins, setCoins, highScore, setHighScore, ownedCards, loading, connectionStatus, updateDisplayName } = useFirebase();
+
+  useEffect(() => {
+    if (customDisplayName) {
+      setDisplayNameInput(customDisplayName);
+    } else if (user?.displayName) {
+      setDisplayNameInput(user.displayName);
+    } else if (user?.email) {
+      setDisplayNameInput(user.email.split('@')[0]);
+    }
+  }, [user, customDisplayName]);
   const { t, getCategoryTranslation, getFormattedCountryName, language } = useTranslation();
 
   const [gameState, setGameState] = useState<GameState>('HOME');
@@ -81,6 +91,9 @@ export default function App() {
   const [calculatedRound, setCalculatedRound] = useState<{ category: GameCategory, rank: number, value: number, isMissing?: boolean } | null>(null);
   const [activeBonus, setActiveBonus] = useState<Bonus | null>(null);
   const [bonusUsed, setBonusUsed] = useState<boolean>(false);
+  const [bonusActiveRound, setBonusActiveRound] = useState<number | null>(null);
+  const [showSettings, setShowSettings] = useState(false);
+  const [displayNameInput, setDisplayNameInput] = useState('');
   const [doubleNextRound, setDoubleNextRound] = useState<boolean>(false);
   const [nextCountry, setNextCountry] = useState<Country | null>(null);
 
@@ -197,13 +210,22 @@ export default function App() {
       setBonusUsed(true);
     } else if (activeBonus.id === 'CLAIRVOYANT') {
       setBonusUsed(true);
+      setBonusActiveRound(rounds.length);
     } else if (activeBonus.id === 'DOUBLE_OR_NOTHING') {
       setBonusUsed(true);
       setDoubleNextRound(true);
 
       // Skip the current round
       // advance to next round but simulate 0 rank loss
-      const fakeCategory: GameCategory = { id: 'SKIP' as any, direction: 'HIGHER' };
+      const fakeCategory: GameCategory = { 
+        id: 'SKIP' as any, 
+        direction: 'HIGHER',
+        label: 'SKIP',
+        labelHigher: 'SKIP',
+        labelLower: 'SKIP',
+        unit: '',
+        description: 'Skip'
+      };
       const newRounds = [...rounds, { country: currentCountry!, category: fakeCategory, rank: 0, value: 0 }];
       
       if (newRounds.length === 6) {
@@ -235,6 +257,7 @@ export default function App() {
 
     } else if (activeBonus.id === 'FORESHADOWING') {
       setBonusUsed(true);
+      setBonusActiveRound(rounds.length);
     }
 
   }, [activeBonus, bonusUsed, availableCategories, rounds, currentCountry, nextCountry, revealStatus, highScore]);
@@ -321,40 +344,47 @@ export default function App() {
   }, [currentCountry, rounds, revealStatus, gameMode, highScore, doubleNextRound, nextCountry]);
 
   return (
-    <div className="min-h-screen w-full relative p-4 md:p-8 flex flex-col items-center justify-center overflow-x-hidden selection:bg-accent-magenta selection:text-white">
+    <div className="min-h-screen w-full relative p-4 pt-28 md:pt-32 md:p-8 flex flex-col items-center justify-center overflow-x-hidden selection:bg-accent-magenta selection:text-white">
       {/* Alpha Badge & Login Widget - Only visible in HOME state */}
       {gameState === 'HOME' && (
         <>
-          <div className="absolute top-4 left-4 z-50 flex flex-wrap items-center gap-2 sm:gap-4 transition-all duration-500">
-            <LanguageSelector />
-            <div className="block">
-              {user ? (
-                <div className="flex items-center gap-2 bg-max-muted px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border-2 border-white/20 shadow-lg backdrop-blur-sm group relative">
-                  <div className="flex items-center gap-1.5 pr-1 mr-1 border-r border-white/10">
-                    <div className={`w-2 h-2 rounded-full ${
-                      connectionStatus === 'online' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 
-                      connectionStatus === 'offline' ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)] animate-pulse' : 
-                      'bg-yellow-500 animate-pulse'
-                    }`} />
-                    <div className="absolute top-full left-0 mt-2 bg-max-bg border border-white/20 p-2 rounded-lg text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[60]">
-                      {connectionStatus === 'online' ? t('sync_online') : 
-                       connectionStatus === 'offline' ? t('sync_offline') : 
-                       t('sync_checking')}
+          <div className="absolute top-4 left-4 right-4 z-50 flex flex-wrap items-center justify-between gap-2 sm:gap-4 transition-all duration-500">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <button 
+                onClick={() => setShowSettings(true)}
+                className="bg-max-muted p-2 rounded-xl hover:bg-white/10 transition-colors border-2 border-white/20"
+              >
+                <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              </button>
+              <div className="block">
+                {user ? (
+                  <div className="flex items-center gap-2 bg-max-muted px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border-2 border-white/20 shadow-lg backdrop-blur-sm group relative">
+                    <div className="flex items-center gap-1.5 pr-1 mr-1 border-r border-white/10">
+                      <div className={`w-2 h-2 rounded-full ${
+                        connectionStatus === 'online' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 
+                        connectionStatus === 'offline' ? 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)] animate-pulse' : 
+                        'bg-yellow-500 animate-pulse'
+                      }`} />
+                      <div className="absolute top-full left-0 mt-2 bg-max-bg border border-white/20 p-2 rounded-lg text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[60]">
+                        {connectionStatus === 'online' ? t('sync_online') : 
+                         connectionStatus === 'offline' ? t('sync_offline') : 
+                         t('sync_checking')}
+                      </div>
                     </div>
-                  </div>
 
-                  <span className="text-xs sm:text-sm font-bold text-white/80 max-w-[70px] sm:max-w-[150px] truncate">{user.displayName || user.email}</span>
-                  <button onClick={logout} className="text-[10px] sm:text-xs bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white px-2 py-0.5 sm:py-1 rounded font-bold uppercase transition-colors shrink-0">{t('logout')}</button>
-                </div>
-              ) : (
-                <button onClick={login} className="text-[10px] sm:text-sm font-black uppercase tracking-wider bg-accent-cyan text-max-bg border-2 border-accent-cyan hover:bg-transparent hover:text-accent-cyan px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl transition-colors shadow-max-cyan shrink-0">
-                  {t('login')}
-                </button>
-              )}
+                    <span className="text-xs sm:text-sm font-bold text-white/80 max-w-[70px] sm:max-w-[150px] truncate">{user.displayName || user.email}</span>
+                    <button onClick={logout} className="text-[10px] sm:text-xs bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white px-2 py-0.5 sm:py-1 rounded font-bold uppercase transition-colors shrink-0">{t('logout')}</button>
+                  </div>
+                ) : (
+                  <button onClick={login} className="text-[10px] sm:text-sm font-black uppercase tracking-wider bg-accent-cyan text-max-bg border-2 border-accent-cyan hover:bg-transparent hover:text-accent-cyan px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl transition-colors shadow-max-cyan shrink-0">
+                    {t('login')}
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-          <div className="absolute top-4 right-4 z-50 bg-accent-magenta text-white text-xs sm:text-sm font-black px-4 py-2 rounded-xl shadow-max-magenta transform rotate-12 pointer-events-none uppercase border-2 border-white/20 hidden sm:block">
-            {t('alpha')}
+            <div className="bg-accent-magenta text-white text-[10px] sm:text-sm font-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl shadow-max-magenta transform rotate-12 pointer-events-none uppercase border-2 border-white/20 whitespace-nowrap">
+              {t('alpha')}
+            </div>
           </div>
         </>
       )}
@@ -364,7 +394,7 @@ export default function App() {
       <FloatingShape type="square" color="#FFE600" size="w-20 h-20" top="70%" left="15%" delay={2} />
       <FloatingShape type="star" color="#7B2FFF" size="w-32 h-32" top="80%" left="75%" delay={3} />
 
-      <main className="relative z-10 w-full max-w-7xl mx-auto min-h-screen flex flex-col justify-center items-center">
+      <main className="relative z-10 w-full max-w-7xl mx-auto flex-1 flex flex-col justify-center items-center">
         
         {gameState === 'HOME' && (
           <motion.div
@@ -372,7 +402,7 @@ export default function App() {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 1.2, opacity: 0 }}
-            className="text-center z-10 w-full flex flex-col items-center justify-center min-h-[100dvh] py-4 px-2"
+            className="text-center z-10 w-full flex flex-col items-center justify-center flex-1 py-4 px-2"
           >
             <motion.div 
               className="mb-4 sm:mb-6 relative flex flex-col items-center flex-shrink-0"
@@ -522,21 +552,21 @@ export default function App() {
             exit={{ x: -300, opacity: 0 }}
             className="w-full max-w-5xl z-10 grid grid-cols-1 lg:grid-cols-12 gap-8"
           >
-            <div className="lg:col-span-12 flex flex-row items-center justify-between gap-2 sm:gap-4 mb-4 w-full">
+            <div className="lg:col-span-12 flex flex-row flex-wrap items-center justify-between gap-3 sm:gap-6 mb-4 w-full">
               <button 
                 onClick={() => setGameState('HOME')} 
-                className="flex items-center justify-center bg-max-muted p-2 sm:p-4 rounded-xl border-2 sm:border-4 border-accent-magenta shadow-max-magenta hover:bg-accent-magenta/20 transition-all shrink-0"
+                className="flex items-center justify-center bg-max-bg p-2 sm:p-4 rounded-xl border-2 sm:border-4 border-accent-magenta shadow-max-magenta hover:bg-accent-magenta/20 transition-all shrink-0 z-10"
                 title={t('quit_game')}
               >
                 <X className="text-accent-magenta shrink-0 w-5 h-5 sm:w-6 sm:h-6" />
               </button>
-              <div className="flex items-center gap-2 sm:gap-4 bg-max-muted p-2 sm:p-4 rounded-xl border-2 sm:border-4 border-accent-purple shadow-max-cyan">
+              <div className="flex items-center gap-2 sm:gap-4 bg-max-bg p-2 sm:p-4 rounded-xl border-2 sm:border-4 border-accent-purple shadow-max-cyan flex-1 justify-center min-w-[120px]">
                 <Target className="text-accent-cyan shrink-0 w-5 h-5 sm:w-6 sm:h-6" />
-                <span className="font-black text-sm sm:text-xl md:text-2xl uppercase">{t('round')} {rounds.length + 1}/6</span>
+                <span className="font-black text-xs sm:text-xl md:text-2xl uppercase whitespace-nowrap">{t('round')} {rounds.length + 1}/6</span>
               </div>
-              <div className="relative flex items-center gap-2 sm:gap-4 bg-max-muted p-2 sm:p-4 rounded-xl border-2 sm:border-4 border-accent-magenta shadow-max-yellow min-w-[100px] justify-center mx-auto">
+              <div className="relative flex items-center gap-2 sm:gap-4 bg-max-bg p-2 sm:p-4 rounded-xl border-2 sm:border-4 border-accent-magenta shadow-max-yellow min-w-[120px] justify-center flex-1 sm:flex-none">
                 <Star className="text-accent-yellow shrink-0 w-5 h-5 sm:w-6 sm:h-6" />
-                <span className="font-black text-sm sm:text-xl md:text-2xl uppercase">{t('score')}: {currentScore}</span>
+                <span className="font-black text-xs sm:text-xl md:text-2xl uppercase whitespace-nowrap">{t('score')}: {currentScore}</span>
                 <AnimatePresence>
                   {pointLoss !== null && (
                     <motion.div
@@ -561,7 +591,7 @@ export default function App() {
                   </div>
                   <p className="text-sm font-bold text-gray-300 flex-1 max-w-sm">{activeBonus.description}</p>
                 </div>
-                {!bonusUsed && activeBonus.id !== 'ZOMBIE' && (
+                {!bonusUsed && activeBonus.id !== 'ZOMBIE' && !(activeBonus.id === 'DOUBLE_OR_NOTHING' && rounds.length === 5) && (
                   <MaxButton 
                     className="!border-0 !shadow-none bg-transparent text-accent-yellow hover:bg-accent-yellow/20 text-sm py-2 px-4 shrink-0"
                     onClick={() => {
@@ -571,27 +601,32 @@ export default function App() {
                     Utiliser le bonus
                   </MaxButton>
                 )}
+                {!bonusUsed && activeBonus.id === 'DOUBLE_OR_NOTHING' && rounds.length === 5 && (
+                   <div className="text-gray-500 font-bold uppercase text-sm border-2 border-gray-500 px-4 py-2 rounded-xl">
+                      Inutilisable (Dernière manche)
+                   </div>
+                )}
                 {activeBonus.id === 'ZOMBIE' && !bonusUsed && (
                    <div className="text-accent-yellow font-bold uppercase text-sm border-2 border-accent-yellow px-4 py-2 rounded-xl">
                       Cliquez sur une catégorie utilisée
                    </div>
                 )}
-                {activeBonus.id === 'CLAIRVOYANT' && bonusUsed && (
+                {activeBonus.id === 'CLAIRVOYANT' && bonusUsed && bonusActiveRound === rounds.length && (
                    <div className="text-accent-cyan font-bold text-sm border-2 border-accent-cyan px-4 py-2 rounded-xl">
                       Stats révélées
                    </div>
                 )}
-                {activeBonus.id === 'FORESHADOWING' && bonusUsed && nextCountry && (
+                {activeBonus.id === 'FORESHADOWING' && bonusUsed && nextCountry && bonusActiveRound === rounds.length && (
                    <div className="text-accent-purple font-bold text-sm border-2 border-accent-purple px-4 py-2 rounded-xl">
-                      Prochain : {getFormattedCountryName(nextCountry.abbreviation || '', nextCountry.name || '')}
+                      {t('foreshadowing_next')} : {getFormattedCountryName(nextCountry.abbreviation || '', nextCountry.name || '')}
                    </div>
                 )}
-                {activeBonus.id === 'DOUBLE_OR_NOTHING' && bonusUsed && (
+                {activeBonus.id === 'DOUBLE_OR_NOTHING' && bonusUsed && bonusActiveRound === rounds.length && (
                    <div className="text-accent-yellow font-bold text-sm border-2 border-accent-yellow px-4 py-2 rounded-xl animate-pulse">
                       Points x2 pour cette manche !
                    </div>
                 )}
-                {bonusUsed && activeBonus.id !== 'CLAIRVOYANT' && activeBonus.id !== 'FORESHADOWING' && activeBonus.id !== 'DOUBLE_OR_NOTHING' && (
+                {bonusUsed && (activeBonus.id === 'RELOCATION' || activeBonus.id === 'REROLL' || activeBonus.id === 'ZOMBIE' || bonusActiveRound !== rounds.length) && (
                   <div className="text-gray-500 font-bold uppercase text-sm border-2 border-gray-500 px-4 py-2 rounded-xl">
                     Utilisé
                   </div>
@@ -800,17 +835,17 @@ export default function App() {
                                   </>
                                 )}
                                 {isUsed && !canZombie && (
-                                   <div className="lg:absolute lg:inset-0 lg:flex lg:items-center lg:justify-center lg:pointer-events-none">
-                                      <span className="text-sm sm:text-base lg:text-4xl font-black text-white/30 lg:text-white/10 -rotate-12 px-2 shrink-0">{t('used')}</span>
+                                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                      <span className="text-xl sm:text-2xl lg:text-4xl font-black text-white/30 lg:text-white/10 -rotate-12 px-2 shrink-0">{t('used')}</span>
                                    </div>
                                 )}
                                 {canZombie && (
-                                  <div className="lg:absolute lg:inset-0 lg:flex lg:items-center lg:justify-center lg:pointer-events-none">
-                                      <span className="text-sm sm:text-base lg:text-3xl font-black text-accent-yellow -rotate-12 px-2 shrink-0">Zombie</span>
+                                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                      <span className="text-xl sm:text-2xl lg:text-3xl font-black text-accent-yellow -rotate-12 px-2 shrink-0">Zombie</span>
                                   </div>
                                 )}
                               </div>
-                              {activeBonus?.id === 'CLAIRVOYANT' && bonusUsed && currentCountry && (
+                              {activeBonus?.id === 'CLAIRVOYANT' && bonusUsed && bonusActiveRound === rounds.length && currentCountry && (
                                 <div className="absolute font-black text-accent-cyan bottom-2 right-2 text-xs sm:text-sm bg-max-bg/80 px-2 rounded backdrop-blur">
                                   {currentCountry.isMissing?.[cat.id] ? '≈ ' : ''}{(currentCountry[cat.id] as number).toLocaleString(language === 'fr' ? 'fr-FR' : 'en-US')} {catT.unit}
                                 </div>
@@ -875,16 +910,16 @@ export default function App() {
                   <motion.div
                     animate={{ rotate: [0, 10, -10, 0] }}
                     transition={{ repeat: Infinity, duration: 2 }}
-                    className="w-32 h-32 bg-accent-yellow rounded-full flex items-center justify-center border-8 border-white mb-6"
+                    className="w-24 h-24 sm:w-32 sm:h-32 bg-accent-yellow rounded-full flex items-center justify-center border-4 sm:border-8 border-white mb-4 sm:mb-6"
                   >
-                    <Trophy className="w-20 h-20 text-max-bg" />
+                    <Trophy className="w-12 h-12 sm:w-20 sm:h-20 text-max-bg" />
                   </motion.div>
-                  <h1 className="text-8xl md:text-9xl text-accent-cyan text-shadow-mega mb-4 animate-gradient-shift bg-gradient-to-r from-accent-cyan via-accent-yellow to-accent-magenta bg-clip-text text-transparent">
+                  <h1 className="text-5xl sm:text-8xl md:text-9xl text-accent-cyan text-shadow-mega mb-4 animate-gradient-shift bg-gradient-to-r from-accent-cyan via-accent-yellow to-accent-magenta bg-clip-text text-transparent leading-tight">
                     {t('victory')}
                   </h1>
                 </div>
               ) : (
-                <h1 className="text-8xl md:text-9xl text-accent-orange text-shadow-mega mb-4">
+                <h1 className="text-5xl sm:text-8xl md:text-9xl text-accent-orange text-shadow-mega mb-4 leading-tight">
                   {t('game_over')}
                 </h1>
               )}
@@ -920,6 +955,112 @@ export default function App() {
           </motion.div>
         )}
       </main>
+
+      {showSettings && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-max-dark border-4 border-white/20 rounded-3xl p-6 md:p-8 max-w-md w-full relative shadow-mega">
+            <button 
+              onClick={() => setShowSettings(false)}
+              className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+            >
+              <X className="w-6 h-6 text-white" />
+            </button>
+            <h2 className="text-3xl font-black text-white mb-8 select-none tracking-tight uppercase">
+              {t('settings') || 'Paramètres'}
+            </h2>
+            
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">Langue</h3>
+                <LanguageSelector />
+              </div>
+              
+              {user && (
+                <>
+                  <div>
+                    <h3 className="text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">Photo de profil</h3>
+                    <div className="flex gap-4 items-center">
+                      <div className="w-16 h-16 rounded-full bg-max-bg border-2 border-white/20 overflow-hidden flex items-center justify-center shrink-0">
+                        {photoURL ? (
+                          <img src={photoURL} alt="Profile" className="w-full h-full object-cover" />
+                        ) : (
+                          <User className="w-8 h-8 text-gray-500" />
+                        )}
+                      </div>
+                      <label className="cursor-pointer bg-max-bg border-4 border-white/20 hover:border-accent-cyan rounded-xl px-4 py-2 font-bold text-sm transition-colors text-center flex-1">
+                        Changer l'image
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          className="hidden" 
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const reader = new FileReader();
+                              reader.onload = (event) => {
+                                const img = new Image();
+                                img.onload = () => {
+                                  const canvas = document.createElement('canvas');
+                                  const MAX_SIZE = 150;
+                                  let width = img.width;
+                                  let height = img.height;
+                                  if (width > height) {
+                                    if (width > MAX_SIZE) {
+                                      height *= MAX_SIZE / width;
+                                      width = MAX_SIZE;
+                                    }
+                                  } else {
+                                    if (height > MAX_SIZE) {
+                                      width *= MAX_SIZE / height;
+                                      height = MAX_SIZE;
+                                    }
+                                  }
+                                  canvas.width = width;
+                                  canvas.height = height;
+                                  const ctx = canvas.getContext('2d');
+                                  ctx?.drawImage(img, 0, 0, width, height);
+                                  const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                                  updatePhotoURL(dataUrl);
+                                };
+                                img.src = event.target?.result as string;
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                        />
+                      </label>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">Pseudo (Leaderboard)</h3>
+                    <div className="flex gap-2">
+                      <input 
+                        type="text" 
+                        value={displayNameInput}
+                        onChange={(e) => setDisplayNameInput(e.target.value)}
+                        maxLength={20}
+                        placeholder="Ton pseudo..."
+                        className="flex-1 bg-max-bg border-4 border-white/20 rounded-xl px-4 py-2 font-bold focus:outline-none focus:border-accent-cyan transition-colors"
+                      />
+                      <MaxButton 
+                        onClick={() => {
+                          if (displayNameInput.trim().length > 0) {
+                            updateDisplayName(displayNameInput.trim());
+                            setShowSettings(false);
+                          }
+                        }}
+                        className="px-6 py-2 border-white/20 text-sm"
+                      >
+                        OK
+                      </MaxButton>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <footer className="relative z-10 w-full max-w-7xl mx-auto py-8 px-4 text-center text-white/30 text-xs sm:text-sm font-medium border-t border-white/5">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">

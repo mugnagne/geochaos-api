@@ -1,16 +1,17 @@
 import { motion } from 'motion/react';
-import { ReactNode } from 'react';
+import { ReactNode, ButtonHTMLAttributes } from 'react';
 
-interface MaxButtonProps {
+export interface MaxButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  onClick?: () => void;
+  variant?: 'primary' | 'secondary' | 'outline';
+  onClick?: any;
   disabled?: boolean;
   className?: string;
-  variant?: 'primary' | 'secondary' | 'outline';
+  type?: "button" | "submit" | "reset";
 }
 
-export const MaxButton = ({ children, onClick, disabled, className = '', variant = 'primary' }: MaxButtonProps) => {
-  const baseStyles = "h-14 px-8 rounded-full font-heading font-black uppercase tracking-widest transition-all duration-300 relative group";
+export const MaxButton = ({ children, onClick, disabled, className = '', variant = 'primary', ...props }: MaxButtonProps) => {
+  const baseStyles = "h-14 rounded-full font-heading font-black uppercase tracking-widest transition-all duration-300 relative group";
   
   const variants = {
     primary: "bg-gradient-to-r from-accent-magenta via-accent-purple to-accent-cyan border-4 border-accent-yellow text-white shadow-max-magenta hover:scale-110 active:scale-95",
@@ -18,13 +19,16 @@ export const MaxButton = ({ children, onClick, disabled, className = '', variant
     outline: "bg-transparent border-4 border-dashed border-accent-yellow text-accent-yellow hover:border-solid hover:bg-accent-yellow hover:text-max-bg"
   };
 
+  const hasPadding = className.includes('px-') || className.includes('p-');
+
   return (
     <motion.button
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
       onClick={onClick}
       disabled={disabled}
-      className={`${baseStyles} ${variants[variant]} ${disabled ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${className}`}
+      className={`${baseStyles} ${hasPadding ? '' : 'px-8'} ${variants[variant]} ${disabled ? 'opacity-50 cursor-not-allowed grayscale' : ''} ${className}`}
+      {...props}
     >
       {children}
     </motion.button>
@@ -44,7 +48,7 @@ export const MaxCard = ({ children, className = '', accent = 'magenta', onClick 
     <motion.div 
       whileHover={onClick ? { scale: 1.02, rotate: 0.5 } : {}}
       onClick={onClick}
-      className={`bg-max-muted/90 backdrop-blur-xl border-4 rounded-3xl p-8 transition-all ${accentColors[accent] || accentColors.magenta} ${className} ${onClick ? 'cursor-pointer hover:bg-max-muted' : ''}`}
+      className={`bg-max-muted/90 backdrop-blur-xl border-4 rounded-3xl p-4 sm:p-6 md:p-8 transition-all ${accentColors[accent] || accentColors.magenta} ${className} ${onClick ? 'cursor-pointer hover:bg-max-muted' : ''}`}
     >
       {children}
     </motion.div>

@@ -22,7 +22,7 @@ export const CATEGORIES: CategorySpec[] = [
   { id: 'density', label: "Densité", labelHigher: "Plus forte densité", labelLower: "Plus faible densité", unit: 'hab/km²', description: "Densité de population (habitants par km²)." },
   { id: 'agriculturalLand', label: "Terres Agricoles", labelHigher: "Plus fort % de terres agricoles", labelLower: "Plus faible % de terres agricoles", unit: '%', description: "Pourcentage du territoire utilisé pour l'agriculture." },
   { id: 'landArea', label: "Superficie", labelHigher: "Plus grande superficie", labelLower: "Plus petite superficie", unit: 'km²', description: "Superficie totale des terres." },
-  { id: 'armedForcesSize', label: "Forces Armées", labelHigher: "Plus grandes forces armées", labelLower: "Plus petites forces armées", unit: 'pers.', description: "Taille des forces armées du pays." },
+  { id: 'armedForcesSize', label: "Forces Armées", labelHigher: "Plus grandes forces armées", labelLower: "Plus petites forces armées", unit: 'k pers.', description: "Taille des forces armées du pays (en milliers)." },
   { id: 'birthRate', label: "Taux de Natalité", labelHigher: "Plus fort taux de natalité", labelLower: "Plus faible taux de natalité", unit: '‰', description: "Nombre moyen de naissances pour 1000 habitants." },
   { id: 'co2Emissions', label: "Émissions CO2", labelHigher: "Plus fortes émissions CO2", labelLower: "Plus faibles émissions CO2", unit: 'kt', description: "Émissions totales de dioxyde de carbone." },
   { id: 'fertilityRate', label: "Taux de Fécondité", labelHigher: "Plus fort taux de fécondité", labelLower: "Plus faible taux de fécondité", unit: 'enf/femme', description: "Nombre moyen d'enfants par femme." },

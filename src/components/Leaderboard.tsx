@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy, limit, getDocs, onSnapshot } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
-import { Trophy, Medal, Crown } from 'lucide-react';
+import { Trophy, Medal, Crown, User } from 'lucide-react';
 import { useTranslation } from './TranslationProvider';
 
 interface LeaderboardEntry {
   id: string;
   displayName: string;
   highScore: number;
+  photoURL?: string;
 }
 
 export function Leaderboard() {
@@ -16,14 +17,15 @@ export function Leaderboard() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    const fetchLeaderboard = async () => {
-      try {
-        const q = query(
-          collection(db, 'users'),
-          orderBy('highScore', 'desc'),
-          limit(10)
-        );
-        const querySnapshot = await getDocs(q);
+    let unsubs: (() => void) | null = null;
+    try {
+      const q = query(
+        collection(db, 'users'),
+        orderBy('highScore', 'desc'),
+        limit(10)
+      );
+      
+      unsubs = onSnapshot(q, (querySnapshot) => {
         const entries: LeaderboardEntry[] = [];
         querySnapshot.forEach((doc) => {
           const data = doc.data();
@@ -31,7 +33,8 @@ export function Leaderboard() {
             entries.push({
               id: doc.id,
               displayName: data.displayName || 'Anonyme',
-              highScore: data.highScore
+              highScore: data.highScore,
+              photoURL: data.photoURL
             });
           }
         });
@@ -48,14 +51,19 @@ export function Leaderboard() {
         const top10Entries = entries.slice(0, 10);
 
         setLeaderboard(top10Entries);
-      } catch (err) {
-        handleFirestoreError(err, OperationType.LIST, 'users');
-      } finally {
         setLoading(false);
-      }
+      }, (error) => {
+        handleFirestoreError(error, OperationType.LIST, 'users');
+        setLoading(false);
+      });
+    } catch (err) {
+      handleFirestoreError(err, OperationType.LIST, 'users');
+      setLoading(false);
+    }
+    
+    return () => {
+      if (unsubs) unsubs();
     };
-
-    fetchLeaderboard();
   }, []);
 
   if (loading && leaderboard.length === 0) {
@@ -97,11 +105,18 @@ export function Leaderboard() {
           return (
             <div key={entry.id} className={`flex items-center justify-between text-xs sm:text-sm p-2 rounded-lg ${index < 3 ? 'bg-white/5' : ''}`}>
               <div className="flex items-center gap-2">
-                <span className={`w-5 font-black text-center ${colorClass}`}>
+                <span className={`w-5 font-black text-center shrink-0 ${colorClass}`}>
                   {index + 1}.
                 </span>
                 {rankIcon}
-                <span className={`truncate max-w-[150px] sm:max-w-[180px] ${colorClass}`}>
+                <div className="w-8 h-8 rounded-full bg-black/20 border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
+                  {entry.photoURL ? (
+                    <img src={entry.photoURL} alt={entry.displayName} className="w-full h-full object-cover" />
+                  ) : (
+                    <User className={`w-4 h-4 ${colorClass}`} />
+                  )}
+                </div>
+                <span className={`truncate max-w-[130px] sm:max-w-[160px] ${colorClass}`}>
                   {entry.displayName}
                 </span>
               </div>

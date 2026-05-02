@@ -58,12 +58,13 @@ async function testConnection() {
     }
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
-    console.error("❌ Firestore : Erreur de connexion :", msg);
     
     if (msg.includes('permission')) {
       console.log("ℹ️ Firestore : Le serveur est joignable mais vos règles bloquent l'accès (normal pour un test).");
       return;
     }
+    
+    console.error("❌ Firestore : Erreur de connexion :", msg);
     
     if (msg.includes('offline')) {
       console.warn("ℹ️ Firestore : Le client se croit hors-ligne. Vérifiez que la variable VITE_FIREBASE_DATABASE_ID est correcte sur Netlify.");

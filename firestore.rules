@@ -7,6 +7,10 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    match /_connection_test_/{docId} {
+      allow read: if true;
+    }
+
     // Primitives
     function isSignedIn() { return request.auth != null; }
     function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
@@ -15,12 +19,14 @@ service cloud.firestore {
 
     function isValidUser(data) {
       return data.keys().hasAll(['coins', 'highScore', 'createdAt', 'updatedAt', 'displayName']) 
-        && data.keys().size() <= 5
+        && data.keys().size() <= 7
         && data.coins is number
         && data.highScore is number
         && data.createdAt is timestamp
         && data.updatedAt is timestamp
-        && data.get('displayName', '') is string;
+        && data.get('displayName', '') is string
+        && data.get('photoURL', '') is string
+        && (data.get('usedPromoCodes', []) is list);
     }
 
     function isValidUserCard(data) {
@@ -34,7 +40,7 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow get: if isSignedIn() && request.auth.uid == userId && isValidId(userId);
-      allow list: if isSignedIn(); // Allow listing users for leaderboard
+      allow list: if true; // Allow listing users for leaderboard (public ranks)
       
       allow create: if isSignedIn() 
         && request.auth.uid == userId 
@@ -48,12 +54,14 @@ service cloud.firestore {
       allow update: if isSignedIn()
         && request.auth.uid == userId
         && isValidId(userId)
-        && incoming().diff(existing()).affectedKeys().hasOnly(['coins', 'highScore', 'updatedAt', 'displayName'])
+        && incoming().diff(existing()).affectedKeys().hasOnly(['coins', 'highScore', 'updatedAt', 'displayName', 'photoURL', 'usedPromoCodes'])
         && incoming().updatedAt == request.time
         && incoming().coins is number
         && incoming().coins >= 0
         && incoming().highScore is number
-        && incoming().highScore >= 0;
+        && incoming().highScore >= 0
+        && incoming().get('photoURL', '') is string
+        && (incoming().get('usedPromoCodes', []) is list);
     }
 
     match /users/{userId}/cards/{cardId} {

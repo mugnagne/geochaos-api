@@ -72,6 +72,8 @@ export const TRANSLATIONS = {
     rarity_legendaire: "LÉGENDAIRE",
     rarity_geochaos: "GEOCHAOS",
     new_card: "NOUVEAU",
+    foreshadowing_label: "Foreshadowing",
+    foreshadowing_next: "Prochain pays",
   },
   en: {
     title_geo: "GEO",
@@ -143,6 +145,8 @@ export const TRANSLATIONS = {
     rarity_legendaire: "LEGENDARY",
     rarity_geochaos: "GEOCHAOS",
     new_card: "NEW",
+    foreshadowing_label: "Foreshadowing",
+    foreshadowing_next: "Next country",
   }
 };
 
@@ -224,8 +228,8 @@ export const CATEGORY_TRANSLATIONS = {
     en: { label: "Land Area", labelHigher: "Largest land area", labelLower: "Smallest land area", unit: 'km²', description: "Total land area." }
   },
   armedForcesSize: {
-    fr: { label: "Forces Armées", labelHigher: "Plus grandes forces armées", labelLower: "Plus petites forces armées", unit: 'pers.', description: "Taille des forces armées du pays." },
-    en: { label: "Armed Forces", labelHigher: "Largest armed forces", labelLower: "Smallest armed forces", unit: 'pers.', description: "Size of the country's armed forces." }
+    fr: { label: "Forces Armées", labelHigher: "Plus grandes forces armées", labelLower: "Plus petites forces armées", unit: 'k pers.', description: "Taille des forces armées du pays (en milliers)." },
+    en: { label: "Armed Forces", labelHigher: "Largest armed forces", labelLower: "Smallest armed forces", unit: 'k pers.', description: "Size of the country's armed forces (in thousands)." }
   },
   birthRate: {
     fr: { label: "Taux de Natalité", labelHigher: "Plus fort taux de natalité", labelLower: "Plus faible taux de natalité", unit: '‰', description: "Nombre moyen de naissances pour 1000 habitants." },
