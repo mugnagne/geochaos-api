@@ -112,7 +112,7 @@ export interface CategorySpec {
   description: string;
 }
 
-export type GameState = 'HOME' | 'START' | 'BONUS_WHEEL' | 'PLAYING' | 'END' | 'TUTORIAL' | 'SHOP' | 'COLLECTION' | 'DASHBOARD';
+export type GameState = 'HOME' | 'START' | 'BONUS_WHEEL' | 'PLAYING' | 'END' | 'TUTORIAL' | 'SHOP' | 'COLLECTION';
 export type GameMode = 'ENDLESS' | 'DAILY';
 
 export type BonusType = 'RELOCATION' | 'REROLL' | 'ZOMBIE' | 'CLAIRVOYANT' | 'DOUBLE_OR_NOTHING' | 'FORESHADOWING';

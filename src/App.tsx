@@ -19,8 +19,6 @@ import { LanguageSelector } from './components/LanguageSelector';
 import { Leaderboard } from './components/Leaderboard';
 import { Bonus } from './types';
 
-import { Dashboard } from './components/Dashboard';
-
 const getFrenchName = (abbreviation: string | undefined, fallback: string) => {
   try {
     const code = abbreviation?.trim().toUpperCase();
@@ -105,13 +103,6 @@ export default function App() {
     timeoutRefs.current.forEach(clearTimeout);
     timeoutRefs.current = [];
     setGameState('HOME');
-    setRounds([]);
-    setCurrentCountry(null);
-    setNextCountry(null);
-    setCalculatedRound(null);
-    setPointLoss(null);
-    setActiveBonus(null);
-    setBonusUsed(false);
   }, []);
 
   const clearAllTimeouts = useCallback(() => {
@@ -507,8 +498,8 @@ export default function App() {
               <MaxButton onClick={() => startNewGame('DAILY')} variant="secondary" className="text-xs sm:text-sm md:text-base h-12 sm:h-14 px-2 sm:px-4 flex items-center justify-center group border-accent-yellow shadow-max-yellow hover:bg-accent-yellow/10">
                 <Target className="mr-1 sm:mr-2 group-hover:scale-110 transition-transform w-4 h-4 sm:w-5 sm:h-5" /> <span className="truncate">{t('btn_daily')}</span>
               </MaxButton>
-              <MaxButton onClick={() => setGameState('DASHBOARD')} variant="secondary" className="text-xs sm:text-sm md:text-base h-12 sm:h-14 px-2 sm:px-4 flex items-center justify-center border-accent-purple shadow-max-purple hover:bg-accent-purple/10">
-                <Target className="mr-1 sm:mr-2 w-4 h-4 sm:w-5 sm:h-5" /> <span className="truncate">Dashboard</span>
+              <MaxButton onClick={() => setGameState('SHOP')} variant="secondary" className="text-xs sm:text-sm md:text-base h-12 sm:h-14 px-2 sm:px-4 flex items-center justify-center border-accent-purple shadow-max-purple hover:bg-accent-purple/10">
+                <ShoppingBag className="mr-1 sm:mr-2 w-4 h-4 sm:w-5 sm:h-5" /> <span className="truncate">{t('btn_shop')}</span>
               </MaxButton>
               <MaxButton onClick={() => setGameState('COLLECTION')} variant="secondary" className="text-xs sm:text-sm md:text-base h-12 sm:h-14 px-2 sm:px-4 flex items-center justify-center border-accent-cyan shadow-max-cyan hover:bg-accent-cyan/10">
                 <List className="mr-1 sm:mr-2 w-4 h-4 sm:w-5 sm:h-5" /> <span className="truncate">{t('btn_collection')}</span>
@@ -536,12 +527,6 @@ export default function App() {
 
         {gameState === 'COLLECTION' && (
           <Collection
-            onBack={() => setGameState('HOME')} 
-          />
-        )}
-
-        {gameState === 'DASHBOARD' && (
-          <Dashboard 
             onBack={() => setGameState('HOME')} 
           />
         )}
