@@ -4,6 +4,7 @@ import { Globe, BarChart, Skull, Eye, Club, Search, Sparkles } from 'lucide-reac
 import { MaxButton, MaxCard } from './MaximalistComponents';
 import { Bonus } from '../types';
 import { BONUSES } from '../data/bonuses';
+import { useTranslation } from './TranslationProvider';
 
 interface Props {
   onBonusSelected: (bonus: Bonus) => void;
@@ -19,6 +20,7 @@ const IconMap: Record<string, React.ElementType> = {
 };
 
 export function BonusWheel({ onBonusSelected }: Props) {
+  const { t } = useTranslation();
   const [spinning, setSpinning] = useState(false);
   const [selectedBonus, setSelectedBonus] = useState<Bonus | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -54,7 +56,7 @@ export function BonusWheel({ onBonusSelected }: Props) {
     <div className="flex flex-col items-center justify-center min-h-[400px] w-full max-w-lg mx-auto bg-max-bg/80 backdrop-blur-md p-6 rounded-3xl">
       <h2 className="text-3xl font-black uppercase text-white mb-8 text-center flex items-center justify-center gap-3">
         <Sparkles className="text-accent-yellow w-8 h-8" />
-        Bonus de Partie
+        {t('bonus_wheel_title')}
         <Sparkles className="text-accent-yellow w-8 h-8" />
       </h2>
       
@@ -70,7 +72,7 @@ export function BonusWheel({ onBonusSelected }: Props) {
               className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 rounded-full"
             >
               {React.createElement(IconMap[BONUSES[currentIndex].icon] || Sparkles, { className: 'w-16 h-16 text-white mb-2' })}
-              <span className="text-white font-bold text-center text-xs px-2">{BONUSES[currentIndex].name}</span>
+              <span className="text-white font-bold text-center text-xs px-2">{t(`bonus_${BONUSES[currentIndex].id}_name` as any) || BONUSES[currentIndex].name}</span>
             </motion.div>
           </AnimatePresence>
         </div>
@@ -83,8 +85,8 @@ export function BonusWheel({ onBonusSelected }: Props) {
           className="flex flex-col items-center justify-center mb-8 bg-gray-900 p-6 rounded-2xl border-4 border-accent-yellow shadow-max-yellow"
         >
           {React.createElement(IconMap[selectedBonus.icon] || Sparkles, { className: 'w-20 h-20 text-accent-yellow mb-4' })}
-          <h3 className="text-2xl font-black text-white text-center mb-2">{selectedBonus.name}</h3>
-          <p className="text-gray-300 text-center text-sm font-bold">{selectedBonus.description}</p>
+          <h3 className="text-2xl font-black text-white text-center mb-2">{t(`bonus_${selectedBonus.id}_name` as any) || selectedBonus.name}</h3>
+          <p className="text-gray-300 text-center text-sm font-bold">{t(`bonus_${selectedBonus.id}_desc` as any) || selectedBonus.description}</p>
         </motion.div>
       )}
 
@@ -93,7 +95,7 @@ export function BonusWheel({ onBonusSelected }: Props) {
           onClick={startSpin}
           className="text-xl px-8 py-4 bg-accent-magenta text-white !border-0 !shadow-none"
         >
-          LANCER LA ROUE
+          {t('bonus_wheel_spin')}
         </MaxButton>
       )}
     </div>

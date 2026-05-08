@@ -32,7 +32,7 @@ export function Leaderboard() {
           if (data.highScore > 0) {
             entries.push({
               id: doc.id,
-              displayName: data.displayName || 'Anonyme',
+              displayName: (!data.displayName || data.displayName === 'Anonyme') ? (t('anonymous') as string) : data.displayName,
               highScore: data.highScore,
               photoURL: data.photoURL
             });

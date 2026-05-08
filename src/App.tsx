@@ -103,6 +103,13 @@ export default function App() {
     timeoutRefs.current.forEach(clearTimeout);
     timeoutRefs.current = [];
     setGameState('HOME');
+    setRounds([]);
+    setCurrentCountry(null);
+    setNextCountry(null);
+    setCalculatedRound(null);
+    setPointLoss(null);
+    setActiveBonus(null);
+    setBonusUsed(false);
   }, []);
 
   const clearAllTimeouts = useCallback(() => {
@@ -629,9 +636,9 @@ export default function App() {
               <div className="lg:col-span-12 flex flex-col md:flex-row items-center justify-between bg-max-bg/90 border-2 sm:border-4 border-accent-cyan p-4 rounded-xl shadow-max-cyan gap-4">
                 <div className="flex items-center gap-4">
                   <div className="bg-accent-cyan p-3 rounded-xl">
-                    <span className="font-black text-white">{activeBonus.name}</span>
+                    <span className="font-black text-white">{t(`bonus_${activeBonus.id}_name` as any) || activeBonus.name}</span>
                   </div>
-                  <p className="text-sm font-bold text-gray-300 flex-1 max-w-sm">{activeBonus.description}</p>
+                  <p className="text-sm font-bold text-gray-300 flex-1 max-w-sm">{t(`bonus_${activeBonus.id}_desc` as any) || activeBonus.description}</p>
                 </div>
                 {!bonusUsed && activeBonus.id !== 'ZOMBIE' && !(activeBonus.id === 'DOUBLE_OR_NOTHING' && rounds.length === 5) && (
                   <MaxButton 
@@ -640,22 +647,22 @@ export default function App() {
                         handleActivateBonus();
                     }}
                   >
-                    Utiliser le bonus
+                    {t('bonus_use')}
                   </MaxButton>
                 )}
                 {!bonusUsed && activeBonus.id === 'DOUBLE_OR_NOTHING' && rounds.length === 5 && (
                    <div className="text-gray-500 font-bold uppercase text-sm border-2 border-gray-500 px-4 py-2 rounded-xl">
-                      Inutilisable (Dernière manche)
+                      {t('bonus_unusable')}
                    </div>
                 )}
                 {activeBonus.id === 'ZOMBIE' && !bonusUsed && (
                    <div className="text-accent-yellow font-bold uppercase text-sm border-2 border-accent-yellow px-4 py-2 rounded-xl">
-                      Cliquez sur une catégorie utilisée
+                      {t('bonus_zombie_desc')}
                    </div>
                 )}
                 {activeBonus.id === 'CLAIRVOYANT' && bonusUsed && bonusActiveRound === rounds.length && (
                    <div className="text-accent-cyan font-bold text-sm border-2 border-accent-cyan px-4 py-2 rounded-xl">
-                      Stats révélées
+                      {t('bonus_stats_revealed')}
                    </div>
                 )}
                 {activeBonus.id === 'FORESHADOWING' && bonusUsed && nextCountry && bonusActiveRound === rounds.length && (
@@ -665,12 +672,12 @@ export default function App() {
                 )}
                 {activeBonus.id === 'DOUBLE_OR_NOTHING' && bonusUsed && bonusActiveRound === rounds.length && (
                    <div className="text-accent-yellow font-bold text-sm border-2 border-accent-yellow px-4 py-2 rounded-xl animate-pulse">
-                      Points x2 pour cette manche !
+                      {t('bonus_points_x2')}
                    </div>
                 )}
                 {bonusUsed && (activeBonus.id === 'RELOCATION' || activeBonus.id === 'REROLL' || activeBonus.id === 'ZOMBIE' || bonusActiveRound !== rounds.length) && (
                   <div className="text-gray-500 font-bold uppercase text-sm border-2 border-gray-500 px-4 py-2 rounded-xl">
-                    Utilisé
+                    {t('used')}
                   </div>
                 )}
               </div>
@@ -913,14 +920,14 @@ export default function App() {
                     className="min-w-[200px] w-64 bg-max-muted border-2 border-accent-purple rounded-xl p-4 flex flex-col items-center justify-center text-center shadow-max-cyan shrink-0"
                   >
                     <span className="text-[10px] md:text-xs font-black text-accent-magenta uppercase mb-2 bg-max-bg/40 px-2 py-1 rounded">
-                      {round.category.id === 'SKIP' ? 'Bonus Quitte ou Double' : (round.category.direction === 'HIGHER' ? getCategoryTranslation(round.category.id).labelHigher : getCategoryTranslation(round.category.id).labelLower)}
+                      {round.category.id === 'SKIP' ? t('bonus_double') : (round.category.direction === 'HIGHER' ? getCategoryTranslation(round.category.id).labelHigher : getCategoryTranslation(round.category.id).labelLower)}
                     </span>
                     <span className="text-lg font-bold truncate w-full px-2 mb-1">
-                       {round.category.id === 'SKIP' ? 'Manche Passée' : getFormattedCountryName(round.country.abbreviation, round.country.name)}
+                       {round.category.id === 'SKIP' ? t('round_skipped') : getFormattedCountryName(round.country.abbreviation, round.country.name)}
                     </span>
                     <div className="text-sm font-medium text-white/70">
                       {round.category.id === 'SKIP' ? (
-                          <span className="text-accent-yellow italic">x2 Prochain Tour</span>
+                          <span className="text-accent-yellow italic">{t('x2_next_round')}</span>
                       ) : round.value !== null && round.value !== undefined ? (
                         <>
                           {round.country.isMissing?.[round.category.id] ? '≈ ' : ''}{round.value.toLocaleString(language === 'fr' ? 'fr-FR' : 'en-US')} {getCategoryTranslation(round.category.id).unit}
@@ -977,8 +984,8 @@ export default function App() {
                    {rounds.map((r, i) => (
                      <div key={i} className="flex justify-between items-center border-b-[1px] border-dashed border-max-bg/50 pb-2 text-sm sm:text-base">
                        <div className="flex flex-col text-left">
-                         <span className="font-bold">{r.category.id === 'SKIP' ? 'Manche Passée' : getFormattedCountryName(r.country.abbreviation, r.country.name)}</span>
-                         <span className="text-[10px] text-white/50 uppercase">{r.category.id === 'SKIP' ? 'Bonus Quitte ou Double' : (r.category.direction === 'HIGHER' ? getCategoryTranslation(r.category.id).labelHigher : getCategoryTranslation(r.category.id).labelLower)}</span>
+                         <span className="font-bold">{r.category.id === 'SKIP' ? t('round_skipped') : getFormattedCountryName(r.country.abbreviation, r.country.name)}</span>
+                         <span className="text-[10px] text-white/50 uppercase">{r.category.id === 'SKIP' ? t('bonus_double') : (r.category.direction === 'HIGHER' ? getCategoryTranslation(r.category.id).labelHigher : getCategoryTranslation(r.category.id).labelLower)}</span>
                        </div>
                        <span className="font-black text-accent-yellow text-xl">{r.category.id === 'SKIP' ? '-' : `#${r.rank}`}</span>
                      </div>
@@ -1008,12 +1015,12 @@ export default function App() {
               <X className="w-6 h-6 text-white" />
             </button>
             <h2 className="text-3xl font-black text-white mb-8 select-none tracking-tight uppercase">
-              {t('settings') || 'Paramètres'}
+              {t('settings')}
             </h2>
             
             <div className="space-y-6">
               <div>
-                <h3 className="text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">Langue</h3>
+                <h3 className="text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">{t('language_label')}</h3>
                 <LanguageSelector />
               </div>
               
@@ -1030,7 +1037,7 @@ export default function App() {
                         )}
                       </div>
                       <label className="cursor-pointer bg-max-bg border-4 border-white/20 hover:border-accent-cyan rounded-xl px-4 py-2 font-bold text-sm transition-colors text-center flex-1">
-                        Changer l'image
+                        {t('change_image')}
                         <input 
                           type="file" 
                           accept="image/*" 
@@ -1074,14 +1081,14 @@ export default function App() {
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">Pseudo (Leaderboard)</h3>
+                    <h3 className="text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">{t('username')}</h3>
                     <div className="flex gap-2">
                       <input 
                         type="text" 
                         value={displayNameInput}
                         onChange={(e) => setDisplayNameInput(e.target.value)}
                         maxLength={20}
-                        placeholder="Ton pseudo..."
+                        placeholder={t('username_placeholder')}
                         className="flex-1 bg-max-bg border-4 border-white/20 rounded-xl px-4 py-2 font-bold focus:outline-none focus:border-accent-cyan transition-colors"
                       />
                       <MaxButton 

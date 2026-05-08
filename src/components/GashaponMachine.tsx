@@ -27,7 +27,7 @@ const getWeightedRandomRarity = (): Rarity => {
 };
 
 export function GashaponMachine({ isPulling, expectedRarity }: Props) {
-  const { language } = useTranslation();
+  const { language, t } = useTranslation();
   const [capsuleColors, setCapsuleColors] = useState<Rarity[]>(() => 
     Array(9).fill(null).map(() => getWeightedRandomRarity())
   );
@@ -108,7 +108,7 @@ export function GashaponMachine({ isPulling, expectedRarity }: Props) {
       
       <div className="w-64 h-40 sm:h-48 bg-accent-magenta rounded-t-3xl rounded-b-xl border-4 border-white shadow-[0_0_20px_#FF3AF2] relative flex flex-col items-center z-10">
         <div className="absolute top-3 right-4 bg-accent-yellow text-max-bg font-black px-2 py-0.5 sm:py-1 rounded-lg border-2 border-max-bg text-xs sm:text-sm transform rotate-12 shadow-md">
-          10 {language === 'fr' ? 'PIÈCES' : 'COINS'}
+          10 {t('pieces')}
         </div>
 
         <div className="w-20 h-20 sm:w-24 sm:h-24 bg-max-bg/50 rounded-full mt-6 sm:mt-8 border-4 border-white/20 flex items-center justify-center relative shadow-inner">

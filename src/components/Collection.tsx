@@ -192,7 +192,7 @@ export function Collection({ onBack }: Props) {
               <div className="flex flex-col w-full max-w-sm md:w-1/2 flex-shrink-0 items-center">
                 <div className="text-center mb-6 pointer-events-none sticky top-0 z-50">
                    <p className="text-white/80 mt-1 text-sm sm:text-base font-black uppercase tracking-wider bg-max-bg/90 px-6 py-3 rounded-xl border border-white/20 shadow-lg">
-                    {language === 'fr' ? 'Cliquez sur la carte pour la retourner' : 'Click the card to flip it'}
+                    {t('collection_flip')}
                   </p>
                 </div>
 
@@ -231,7 +231,7 @@ export function Collection({ onBack }: Props) {
                         </span>
                       </div>
                       <div className="absolute bottom-6 relative z-10 text-white/80 text-sm font-bold uppercase tracking-widest drop-shadow-md">
-                        {language === 'fr' ? 'ÉDITION' : 'EDITION'} {inspectingCard.rarity}
+                        {t('collection_edition')} {inspectingCard.rarity}
                       </div>
                     </div>
                   </motion.div>
@@ -242,7 +242,7 @@ export function Collection({ onBack }: Props) {
               <div className="w-full md:w-1/2 flex flex-col h-full">
                 <MaxCard accent="purple" className="w-full flex-1 flex flex-col items-start text-left bg-max-bg/95 backdrop-blur-xl border-2 border-accent-purple shadow-max-purple">
                   <h3 className="text-2xl sm:text-3xl font-black mb-6 uppercase text-accent-cyan tracking-wide border-b-2 border-white/10 pb-4 w-full">
-                    {language === 'fr' ? 'Statistiques de la carte' : 'Card Statistics'}
+                    {t('collection_stats')}
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
                     {Object.entries(inspectingCard.country).map(([key, val]) => {
